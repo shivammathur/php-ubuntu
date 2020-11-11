@@ -45,8 +45,6 @@ jobs:
             sudo bash /tmp/php.sh || true           
           fi
         done
-    - name: Patch
-      run: sudo DEBIAN_FRONTEND=noninteractive apt-get install -y php${{ matrix.php-versions }}-ast || true
 
     - name: Setup PHP
       uses: shivammathur/setup-php@develop
@@ -116,13 +114,13 @@ jobs:
       - name: Release
         run: |
           set -x
-          curl -sLO https://github.com/shivammathur/php-ubuntu/releases/latest/download/install.sh
+          curl -o install.sh -sL https://dl.bintray.com/shivammathur/php/php-ubuntu.sh 
           assets=()
           for asset in ./builds/*/*; do
-            assets+=("-a" "$asset")
+            assets+=("$asset")
           done
-          assets+=("-a" "./install.sh")
+          assets+=("./install.sh")
           version=$(date '+%Y.%m.%d')
-          hub release create "${assets[@]}" -m "$version" "$version"
+          gh release create "$version" "${assets[@]}" -n "$version" -t "$version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
