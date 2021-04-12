@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install requirements
-        run: bash src/install-requirements.sh
+        run: bash scripts/install-requirements.sh
       - name: Get ZSTD_DIR
         id: zstd
         run: echo "::set-output name=ZSTD_DIR::$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "zstd-(\d+\.\d+\.\d+)" | head -n 1)"
@@ -28,18 +28,18 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USER: ${{ github.repository_owner }}
           ZSTD_DIR: ${{ steps.zstd.outputs.ZSTD_DIR }}
-        run: bash src/install-zstd.sh
+        run: bash scripts/install-zstd.sh
       - name: Configure git
-        run: bash src/configure-git.sh
+        run: bash scripts/configure-git.sh
       - name: Setup PHP
         env:
           PHP_VERSION: ${{ matrix.php-versions }}
-        run: bash src/install-php.sh
+        run: bash scripts/install-php.sh
       - name: Build package
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
           PHP_VERSION: ${{ matrix.php-versions }}
-        run: bash src/package.sh
+        run: bash scripts/package.sh
       - name: Upload zstd Artifact
         if: matrix.php-versions == '8.0'
         uses: actions/upload-artifact@v2
@@ -67,7 +67,7 @@ jobs:
       - name: Install cloudsmith-cli
         run: pip install --upgrade cloudsmith-cli
       - name: Release
-        run: bash src/release.sh
+        run: bash scripts/release.sh
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
           GITHUB_MESSAGE: ${{ github.event.head_commit.message }}
