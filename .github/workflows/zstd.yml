@@ -25,6 +25,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USER: ${{ github.repository_owner }}
           ZSTD_DIR: ${{ steps.zstd.outputs.ZSTD_DIR }}
+          USE_CACHE: 'false'
         run: bash scripts/install-zstd.sh
       - name: Upload zstd Artifact
         uses: actions/upload-artifact@v2
