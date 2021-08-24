@@ -18,6 +18,13 @@ install() {
   sudo mv /var/lib/dpkg/status-orig /var/lib/dpkg/status
 }
 
+fix_service() {
+  if [ "$reload" = "true" ]; then
+    sudo systemctl daemon-reload 2>/dev/null || true
+    sudo systemctl start php"$version"-fpm 2>/dev/null || true
+  fi
+}
+
 fix_alternatives() {
   to_wait=()
   for tool in phpize php-config phpdbg php-cgi php phar.phar phar; do
@@ -32,5 +39,7 @@ fix_alternatives() {
 . /etc/os-release
 version=$1
 tar_file=php_"$version"%2Bubuntu"$VERSION_ID".tar.zst
+! [ -e /lib/systemd/system/php"$version"-fpm.service ] && reload=true
 install
 fix_alternatives
+fix_service
