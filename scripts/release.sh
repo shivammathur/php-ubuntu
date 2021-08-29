@@ -13,13 +13,13 @@ release_cds() {
 }
 
 release_create() {
-  release_cds
+  #release_cds
   gh release create "builds" ./scripts/install.sh "${assets[@]}" -n "builds $version" -t "builds"
 }
 
 release_upload() {
   gh release download -p "build.log" || true
-  release_cds
+  #release_cds
   gh release upload "builds" ./scripts/install.sh "${assets[@]}" --clobber
 }
 
