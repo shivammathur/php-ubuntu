@@ -37,10 +37,20 @@ fix_alternatives() {
   sudo update-alternatives --quiet --force --install /usr/lib/cgi-bin/php php-cgi-bin "/usr/lib/cgi-bin/php$version" "${version/./}"
 }
 
+check_reload() {
+  if ! [ -e /lib/systemd/system/php"$version"-fpm.service ]; then
+    reload=true
+  fi
+  if [ "$(readlink -f /etc/systemd/system/php"$version"-fpm.service)" = "/dev/null" ]; then
+    sudo rm -f /etc/systemd/system/php"$version"-fpm.service
+    reload=true
+  fi
+}
+
 . /etc/os-release
 version=$1
 tar_file=php_"$version"%2Bubuntu"$VERSION_ID".tar.zst
-! [ -e /lib/systemd/system/php"$version"-fpm.service ] && reload=true
+check_reload
 install
 fix_alternatives
 fix_service
