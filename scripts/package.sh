@@ -7,7 +7,7 @@ for file in $(git log -p -n 1 --name-only | sed 's/^.*\(\s\).*$/\1/' | xargs -L1
   sudo cp -r -p --parents "$file" /tmp/php || true
 done
 sudo touch /var/lib/dpkg/status-diff
-sudo python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
+sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
 sudo cp "$GITHUB_WORKSPACE"/scripts/merge_status.py /tmp/php/usr/sbin/merge_status
 sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/

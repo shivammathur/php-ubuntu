@@ -13,8 +13,9 @@ get() {
 install() {
   get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
   sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
+  sudo rm -rf /var/lib/apt/lists/*ondrej*
   sudo tar -I zstd -xf /tmp/"$tar_file" -C /
-  sudo python3 /usr/sbin/merge_status && sudo rm -f /usr/sbin/merge_status
+  sudo LC_ALL=C.UTF-8 python3 /usr/sbin/merge_status && sudo rm -f /usr/sbin/merge_status
   sudo mv /var/lib/dpkg/status-orig /var/lib/dpkg/status
 }
 
