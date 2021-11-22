@@ -4,11 +4,14 @@ find /etc -maxdepth 1 -mindepth 1 -type d -exec git add {} \;
 git commit -m "installed php"
 mkdir -p /tmp/php/etc/apt/sources.list.d /tmp/php/etc/apt/trusted.gpg.d /tmp/php/var/lib/apt/lists
 for file in $(git log -p -n 1 --name-only | sed 's/^.*\(\s\).*$/\1/' | xargs -L1 echo); do
-  sudo cp -r -p --parents "$file" /tmp/php || true
+  if [ -e "$file" ]; then
+    sudo cp -r -p --parents "$file" /tmp/php || true
+  fi
 done
 sudo touch /var/lib/dpkg/status-diff
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
+sudo mkdir -p /tmp/php/usr/sbin
 sudo cp "$GITHUB_WORKSPACE"/scripts/merge_status.py /tmp/php/usr/sbin/merge_status
 sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
 sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
