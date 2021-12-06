@@ -88,5 +88,5 @@ if [[ $PHP_VERSION =~ 7.[3-4]|8.[0-1] ]]; then
   done
 fi  
 
-sudo apt-get install libpcre3-dev libpq-dev unixodbc-dev -y || true
+sudo apt-get install libpcre3-dev libsodium-dev libpq-dev unixodbc-dev -y || true
 sudo rm -rf /var/cache/apt/archives/*.deb || true
