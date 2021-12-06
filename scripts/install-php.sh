@@ -1,78 +1,92 @@
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
 apt-get install -f
-for version in $PHP_VERSION; do
-  echo "Installing PHP $version"
-  apt-fast install -y --no-install-recommends \
-    php$version \
-    php$version-amqp \
-    php$version-apcu \
-    php$version-bcmath \
-    php$version-bz2 \
-    php$version-cgi \
-    php$version-cli \
-    php$version-common \
-    php$version-curl \
-    php$version-dba \
-    php$version-dev \
-    php$version-enchant \
-    php$version-fpm \
-    php$version-gd \
-    php$version-gmp \
-    php$version-igbinary \
-    php$version-imagick \
-    php$version-imap \
-    php$version-interbase \
-    php$version-intl \
-    php$version-ldap \
-    php$version-mbstring \
-    php$version-memcache \
-    php$version-memcached \
-    php$version-mongodb \
-    php$version-mysql \
-    php$version-odbc \
-    php$version-opcache \
-    php$version-pgsql \
-    php$version-phpdbg \
-    php$version-pspell \
-    php$version-readline \
-    php$version-redis \
-    php$version-snmp \
-    php$version-soap \
-    php$version-sqlite3 \
-    php$version-sybase \
-    php$version-tidy \
-    php$version-xdebug \
-    php$version-xml \
-    php$version-xsl \
-    php$version-yaml \
-    php$version-zip \
-    php$version-zmq
+echo "Installing PHP $PHP_VERSION"
+apt-fast install -y --no-install-recommends \
+  php$PHP_VERSION \
+  php$PHP_VERSION-amqp \
+  php$PHP_VERSION-apcu \
+  php$PHP_VERSION-bcmath \
+  php$PHP_VERSION-bz2 \
+  php$PHP_VERSION-cgi \
+  php$PHP_VERSION-cli \
+  php$PHP_VERSION-common \
+  php$PHP_VERSION-curl \
+  php$PHP_VERSION-dba \
+  php$PHP_VERSION-dev \
+  php$PHP_VERSION-enchant \
+  php$PHP_VERSION-fpm \
+  php$PHP_VERSION-gd \
+  php$PHP_VERSION-gmp \
+  php$PHP_VERSION-igbinary \
+  php$PHP_VERSION-imagick \
+  php$PHP_VERSION-imap \
+  php$PHP_VERSION-interbase \
+  php$PHP_VERSION-intl \
+  php$PHP_VERSION-ldap \
+  php$PHP_VERSION-mbstring \
+  php$PHP_VERSION-memcache \
+  php$PHP_VERSION-memcached \
+  php$PHP_VERSION-mongodb \
+  php$PHP_VERSION-msgpack \
+  php$PHP_VERSION-mysql \
+  php$PHP_VERSION-odbc \
+  php$PHP_VERSION-opcache \
+  php$PHP_VERSION-pgsql \
+  php$PHP_VERSION-phpdbg \
+  php$PHP_VERSION-pspell \
+  php$PHP_VERSION-readline \
+  php$PHP_VERSION-redis \
+  php$PHP_VERSION-snmp \
+  php$PHP_VERSION-soap \
+  php$PHP_VERSION-sqlite3 \
+  php$PHP_VERSION-sybase \
+  php$PHP_VERSION-tidy \
+  php$PHP_VERSION-xdebug \
+  php$PHP_VERSION-xml \
+  php$PHP_VERSION-xsl \
+  php$PHP_VERSION-yaml \
+  php$PHP_VERSION-zip \
+  php$PHP_VERSION-zmq
 
-  if [[ $version == "5.6" || $version == "7.0" || $version == "7.1" ]]; then
-    apt-fast install -y --no-install-recommends php$version-mcrypt php$version-recode
-  fi
+if [[ $PHP_VERSION == "5.6" || $PHP_VERSION == "7.0" || $PHP_VERSION == "7.1" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt php$PHP_VERSION-recode
+fi
 
-  if [[ $version == "7.2" || $version == "7.3" ]]; then
-    apt-fast install -y --no-install-recommends php$version-recode
-  fi
+if [[ $PHP_VERSION == "7.2" || $PHP_VERSION == "7.3" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-recode
+fi
 
-  if [[ $version != "8.0" ]]; then
-    apt-fast install -y --no-install-recommends php$version-xmlrpc php$version-json
-  fi
+if [[ $PHP_VERSION != "8.0" && $PHP_VERSION != "8.1" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc php$PHP_VERSION-json
+fi
 
-  if [[ $version != "5.6" && $version != "7.0" ]]; then
-    apt-fast install -y --no-install-recommends php$version-pcov
-    phpdismod -v $version pcov
-  fi
+if [[ $PHP_VERSION != "5.6" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-ds
+  phpdismod -v $PHP_VERSION pcov
+fi
 
-  if [[ $version = "7.0" || $version = "7.1" ]]; then
-    apt-fast install -y --no-install-recommends php$version-sodium
-  fi
-done
+if [[ $PHP_VERSION != "5.6" && $PHP_VERSION != "7.0" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-pcov
+  phpdismod -v $PHP_VERSION pcov
+fi
+
+if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
+fi
+
+apt-fast install -y --no-install-recommends php-pear
 
 for extension in ast pcov; do
   sudo apt-get install "php$PHP_VERSION-$extension" -y 2>/dev/null || true
 done
+
+if [[ $PHP_VERSION =~ 7.[3-4]|8.[0-1] ]]; then
+  for extension in sqlsrv pdo_sqlsrv; do
+    sudo pecl install "$extension"-5.10.0beta2
+    sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
+    phpenmod -v "$PHP_VERSION" "$extension"
+  done
+fi  
 
 sudo apt-get install libpcre3-dev libpq-dev unixodbc-dev -y || true
 sudo rm -rf /var/cache/apt/archives/*.deb || true
