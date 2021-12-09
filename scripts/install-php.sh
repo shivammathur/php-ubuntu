@@ -65,20 +65,21 @@ if [[ $PHP_VERSION != "5.6" ]]; then
   phpdismod -v $PHP_VERSION pcov
 fi
 
-if [[ $PHP_VERSION != "5.6" && $PHP_VERSION != "7.0" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-pcov
-  phpdismod -v $PHP_VERSION pcov
-fi
-
 if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
 fi
 
 apt-fast install -y --no-install-recommends php-pear
 
-for extension in ast pcov; do
+for extension in ast; do
   sudo apt-get install "php$PHP_VERSION-$extension" -y 2>/dev/null || true
 done
+
+if [[ $PHP_VERSION =~ 7.[1-4]|8.[0-1] ]]; then
+  sudo pecl install pcov
+  sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/pcov.ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/pcov.ini
+  phpenmod -v "$PHP_VERSION" pcov
+fi
 
 if [[ $PHP_VERSION =~ 7.[3-4]|8.[0-1] ]]; then
   for extension in sqlsrv pdo_sqlsrv; do
