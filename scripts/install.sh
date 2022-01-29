@@ -49,7 +49,7 @@ check_reload() {
 
 . /etc/os-release
 version=$1
-tar_file=php_"$version"%2Bubuntu"$VERSION_ID".tar.zst
+tar_file=php_"$version"+ubuntu"$VERSION_ID".tar.zst
 check_reload
 install
 fix_alternatives
