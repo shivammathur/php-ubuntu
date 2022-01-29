@@ -19,6 +19,9 @@ for key, value in listing.items():
   if key not in old_listing or listing[key] != old_listing[key]:
     new_listing[key] = value
 
+if 'libpcre3' in listing:
+  new_listing['libpcre3'] = listing['libpcre3']
+
 dff = open(status + '-diff', "w")
 for key in sorted(new_listing):
     dff.write(new_listing[key])
