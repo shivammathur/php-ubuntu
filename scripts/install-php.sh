@@ -74,13 +74,15 @@ for extension in ast pcov; do
   sudo apt-get install "php$PHP_VERSION-$extension" -y 2>/dev/null || true
 done
 
-if [[ $PHP_VERSION =~ 7.[3-4]|8.[0-1] ]]; then
-  for extension in sqlsrv pdo_sqlsrv; do
-    sudo pecl install "$extension"-5.10.0beta2
-    sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
-    phpenmod -v "$PHP_VERSION" "$extension"
-  done
-fi  
+for extension in sqlsrv pdo_sqlsrv; do
+  if [[ $PHP_VERSION =~ 7.[0-3] ]]; then
+    sudo pecl install -f "$extension"-5.9.0
+  elif [[ $PHP_VERSION =~ 7.4|8.[0-1] ]]; then
+    sudo pecl install -f "$extension"
+  fi
+  sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
+  phpenmod -v "$PHP_VERSION" "$extension"
+done
 
 sudo apt-get install libpcre3-dev libsodium-dev libpq-dev unixodbc-dev -y || true
 sudo rm -rf /var/cache/apt/archives/*.deb || true
