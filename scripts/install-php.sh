@@ -80,8 +80,10 @@ for extension in sqlsrv pdo_sqlsrv; do
   elif [[ $PHP_VERSION =~ 7.4|8.[0-1] ]]; then
     sudo pecl install -f "$extension"
   fi
-  sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
-  phpenmod -v "$PHP_VERSION" "$extension"
+  if [[ $PHP_VERSION =~ 7.[0-4]|8.[0-1] ]]; then
+    sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
+    phpenmod -v "$PHP_VERSION" "$extension"
+  fi  
 done
 
 sudo apt-get install libpcre3-dev libsodium-dev libpq-dev unixodbc-dev -y || true
