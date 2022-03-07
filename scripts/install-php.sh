@@ -88,3 +88,20 @@ done
 
 sudo apt-get install libpcre3-dev libsodium-dev libpq-dev unixodbc-dev -y || true
 sudo rm -rf /var/cache/apt/archives/*.deb || true
+
+if [ -d /run/systemd/system ]; then
+  sudo systemctl daemon-reload 2>/dev/null || true
+  sudo systemctl enable php"$PHP_VERSION"-fpm 2>/dev/null || true
+fi
+
+sed -i 's/TIMEOUT=.*/TIMEOUT=5/g' /etc/init.d/php"$PHP_VERSION"-fpm
+service php"$PHP_VERSION"-fpm restart >/dev/null 2>&1 || service php"$PHP_VERSION"-fpm restart >/dev/null 2>&1 || service php"$PHP_VERSION"-fpm start >/dev/null 2>&1
+service php"$PHP_VERSION"-fpm status
+
+update-alternatives --quiet --force --install /usr/lib/cgi-bin/php php-cgi-bin /usr/lib/cgi-bin/php"$PHP_VERSION" "${PHP_VERSION/./}"
+update-alternatives --quiet --force --install /usr/sbin/php-fpm php-fpm /usr/sbin/php-fpm"$PHP_VERSION" "${PHP_VERSION/./}"
+update-alternatives --quiet --force --install /run/php/php-fpm.sock php-fpm.sock /run/php/php"$PHP_VERSION"-fpm.sock "${PHP_VERSION/./}"
+for tool in phpize php-config phpdbg php-cgi php phar.phar phar; do
+  update-alternatives --quiet --force --install /usr/bin/"$tool" "$tool" /usr/bin/"$tool$PHP_VERSION" "${PHP_VERSION/./}" \
+                      --slave /usr/share/man/man1/"$tool".1.gz "$tool".1.gz /usr/share/man/man1/"$tool$PHP_VERSION".1.gz
+done

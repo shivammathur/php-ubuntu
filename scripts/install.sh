@@ -26,17 +26,6 @@ fix_service() {
   fi
 }
 
-fix_alternatives() {
-  to_wait=()
-  for tool in phpize php-config phpdbg php-cgi php phar.phar phar; do
-    sudo update-alternatives --quiet --force --install "/usr/bin/$tool" "$tool" "/usr/bin/$tool$version" "${version/./}" \
-                             --slave /usr/share/man/man1/"$tool".1.gz "$tool".1.gz /usr/share/man/man1/"$tool$version".1.gz &
-    to_wait+=($!)
-  done
-  wait "${to_wait[@]}"
-  sudo update-alternatives --quiet --force --install /usr/lib/cgi-bin/php php-cgi-bin "/usr/lib/cgi-bin/php$version" "${version/./}"
-}
-
 check_reload() {
   if ! [ -e /lib/systemd/system/php"$version"-fpm.service ]; then
     reload=true
@@ -52,5 +41,4 @@ version=$1
 tar_file=php_"$version"+ubuntu"$VERSION_ID".tar.zst
 check_reload
 install
-fix_alternatives
 fix_service
