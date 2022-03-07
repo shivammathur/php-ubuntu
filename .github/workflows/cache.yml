@@ -88,8 +88,18 @@ jobs:
       - name: Test PHP
         run: |
           php -v
-          php -r "if(strpos(phpversion(), '${{ matrix.php-versions }}') === false) {throw new Exception('Wrong PHP version Installed');}"
+          php-config --version
+          php-config --version
+          php-fpm -v
+          php-cgi -v
+          phpize -v
           php -m
+          sudo service php${{ matrix.php-versions }}-fpm status || exit 1
+          php -v | grep -q '${{ matrix.php-versions }}' || exit 1
+          php-config --version | grep -q '${{ matrix.php-versions }}' || exit 1
+          phpize -v | grep -q "$(php-config --phpapi)" || exit 1
+          php-fpm -v | grep -q '${{ matrix.php-versions }}' || exit 1
+          php-cgi -v | grep -q '${{ matrix.php-versions }}' || exit 1          
 
       - name: Test broken packages
         run: sudo apt-get check      
