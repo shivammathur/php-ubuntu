@@ -85,10 +85,18 @@ jobs:
       - name: Setup PHP
         run: bash scripts/install.sh ${{ matrix.php-versions }}
 
+      - name: Switch versions
+        run: |
+          sudo update-alternatives --set php-cgi-bin /usr/lib/cgi-bin/php${{ matrix.php-versions }}
+          sudo update-alternatives --set php-fpm /usr/sbin/php-fpm${{ matrix.php-versions }}
+          sudo update-alternatives --set php-fpm.sock /run/php/php${{ matrix.php-versions }}-fpm.sock
+          for tool in phpize php-config phpdbg php-cgi php phar.phar phar; do
+            sudo update-alternatives --set "$tool" /usr/bin/"$tool"${{ matrix.php-versions }}
+          done
+
       - name: Test PHP
         run: |
           php -v
-          php-config --version
           php-config --version
           php-fpm -v
           php-cgi -v
