@@ -26,7 +26,6 @@ apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-mbstring \
   php$PHP_VERSION-memcache \
   php$PHP_VERSION-memcached \
-  php$PHP_VERSION-mongodb \
   php$PHP_VERSION-msgpack \
   php$PHP_VERSION-mysql \
   php$PHP_VERSION-odbc \
@@ -68,6 +67,11 @@ if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
 fi
 
+if [[ $PHP_VERSION != "7.1" || $VERSION_ID != "22.04" ]]; then
+  apt-fast install -y --no-install-recommends php$PHP_VERSION-mongodb
+fi
+
+apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
 apt-fast install -y --no-install-recommends php-pear
 
 for extension in ast pcov; do
@@ -86,7 +90,6 @@ for extension in sqlsrv pdo_sqlsrv; do
   fi  
 done
 
-sudo apt-get install libpcre3-dev libsodium-dev libpq-dev unixodbc-dev -y || true
 sudo rm -rf /var/cache/apt/archives/*.deb || true
 
 if [ -d /run/systemd/system ]; then
