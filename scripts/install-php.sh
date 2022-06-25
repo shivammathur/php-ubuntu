@@ -26,6 +26,7 @@ apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-mbstring \
   php$PHP_VERSION-memcache \
   php$PHP_VERSION-memcached \
+  php$PHP_VERSION-mongodb \
   php$PHP_VERSION-msgpack \
   php$PHP_VERSION-mysql \
   php$PHP_VERSION-odbc \
@@ -67,15 +68,19 @@ if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
 fi
 
-if [[ $PHP_VERSION != "7.1" || $VERSION_ID != "22.04" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-mongodb
-fi
-
 apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
 apt-fast install -y --no-install-recommends php-pear
 
 for extension in ast pcov; do
-  sudo apt-get install "php$PHP_VERSION-$extension" -y 2>/dev/null || true
+  sudo apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension" 2>/dev/null || true
+done
+
+
+tools=(pear pecl php phar phar.phar php-cgi php-config phpize phpdbg)
+for tool in "${tools[@]}"; do
+  if [ -e "/usr/bin/$tool$PHP_VERSION" ]; then
+    sudo update-alternatives --set "$tool" /usr/bin/"$tool$PHP_VERSION"
+  fi
 done
 
 for extension in sqlsrv pdo_sqlsrv; do
