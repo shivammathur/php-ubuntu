@@ -26,6 +26,12 @@ fix_service() {
   fi
 }
 
+fix_packages() {
+  if [ "$VERSION_ID" = "18.04" ] && ! sudo apt-get check 2>/dev/null; then
+    sudo apt --fix-broken install
+  fi
+}
+
 fix_alternatives() {
   to_wait=()
   sudo update-alternatives --force --install /usr/lib/cgi-bin/php php-cgi-bin /usr/lib/cgi-bin/php"$version" "${version/./}" & to_wait+=($!)
@@ -56,3 +62,4 @@ check_reload
 install
 fix_alternatives
 fix_service
+fix_packages
