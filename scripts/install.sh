@@ -32,6 +32,13 @@ fix_packages() {
   fi
 }
 
+fix_list() {
+  if [ "$builds" = "debug" ]; then
+    list=/etc/apt/sources.list.d/"$(basename "$(grep -lr "ondrej/php" /etc/apt/sources.list.d)")"
+    sudo apt-get update -o Dir::Etc::sourcelist="$list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+  fi
+}
+
 fix_alternatives() {
   to_wait=()
   sudo update-alternatives --force --install /usr/lib/cgi-bin/php php-cgi-bin /usr/lib/cgi-bin/php"$version" "${version/./}" & to_wait+=($!)
@@ -57,9 +64,12 @@ check_reload() {
 
 . /etc/os-release
 version=$1
-tar_file=php_"$version"+ubuntu"$VERSION_ID".tar.zst
+builds=${2:-release}
+[ "${builds:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
+tar_file=php_"$version$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
 check_reload
 install
 fix_alternatives
 fix_service
+fix_list
 fix_packages

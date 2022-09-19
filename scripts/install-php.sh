@@ -1,6 +1,8 @@
+[ "${BUILDS:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
 apt-get install -f
 echo "Installing PHP $PHP_VERSION"
+
 apt-fast install -y --no-install-recommends \
   php$PHP_VERSION \
   php$PHP_VERSION-amqp \
@@ -48,16 +50,63 @@ apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-zip \
   php$PHP_VERSION-zmq
 
+[ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends \
+  php$PHP_VERSION$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-amqp$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-apcu$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-bcmath$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-bz2$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-cgi$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-cli$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-common$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-curl$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-dba$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-enchant$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-fpm$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-gd$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-gmp$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-igbinary$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-imagick$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-imap$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-interbase$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-intl$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-ldap$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-mbstring$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-memcache$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-memcached$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-mongodb$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-msgpack$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-mysql$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-odbc$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-opcache$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-pgsql$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-phpdbg$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-pspell$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-readline$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-redis$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-snmp$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-soap$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-sqlite3$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-sybase$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-tidy$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-xml$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-yaml$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-zip$PHP_PKG_SUFFIX \
+  php$PHP_VERSION-zmq$PHP_PKG_SUFFIX
+
 if [[ $PHP_VERSION == "5.6" || $PHP_VERSION == "7.0" || $PHP_VERSION == "7.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt php$PHP_VERSION-recode
+  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt$PHP_PKG_SUFFIX php$PHP_VERSION-recode$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION == "7.2" || $PHP_VERSION == "7.3" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-recode
+  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-recode$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION != "8.0" && $PHP_VERSION != "8.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc php$PHP_VERSION-json
+  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc$PHP_PKG_SUFFIX php$PHP_VERSION-json$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION != "5.6" ]]; then
@@ -66,6 +115,7 @@ fi
 
 if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
+  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium$PHP_PKG_SUFFIX
 fi
 
 apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
@@ -73,6 +123,7 @@ apt-fast install -y --no-install-recommends php-pear
 
 for extension in ast pcov; do
   sudo apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension" 2>/dev/null || true
+  [ "${BUILDS:?}" = "debug" ] && sudo apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension$PHP_PKG_SUFFIX" 2>/dev/null || true
 done
 
 
@@ -96,6 +147,7 @@ for extension in sqlsrv pdo_sqlsrv; do
 done
 
 sudo rm -rf /var/cache/apt/archives/*.deb || true
+sudo rm -rf /var/cache/apt/archives/*.ddeb || true
 
 if [ -d /run/systemd/system ]; then
   sudo systemctl daemon-reload 2>/dev/null || true

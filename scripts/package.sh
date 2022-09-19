@@ -1,4 +1,5 @@
 cd / || exit 1
+[ "${BUILDS:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
 git add /bin /lib /lib64 /sbin /usr /var /run/php
 find /etc -maxdepth 1 -mindepth 1 -type d -exec git add {} \;
 git commit -m "installed php"
@@ -21,8 +22,8 @@ sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-ol
 SEMVER="$(php -v | head -n 1 | cut -f 2 -d ' ' | cut -f 1 -d '-')"
 (
   cd /tmp/php || exit 1
-  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION"+ubuntu"$VERSION_ID".tar.zst
-  cp ../php_"$PHP_VERSION"+ubuntu"$VERSION_ID".tar.zst ../php_"$SEMVER"+ubuntu"$VERSION_ID".tar.zst
+  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
+  cp ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst ../php_"$SEMVER$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
 )
 cd "$GITHUB_WORKSPACE" || exit 1
 mkdir builds
