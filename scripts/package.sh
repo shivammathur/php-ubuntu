@@ -20,10 +20,14 @@ sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 . /etc/os-release
 SEMVER="$(php -v | head -n 1 | cut -f 2 -d ' ' | cut -f 1 -d '-')"
+SUFFIX=""
+if [ "${LIBS:?}" = "true" ]; then
+  SUFFIX="-libs";
+fi
 (
   cd /tmp/php || exit 1
-  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
-  cp ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst ../php_"$SEMVER$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
+  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst
+  cp ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst ../php_"$SEMVER$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst
 )
 cd "$GITHUB_WORKSPACE" || exit 1
 mkdir builds

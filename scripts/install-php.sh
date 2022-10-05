@@ -1,9 +1,9 @@
 [ "${BUILDS:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
-apt-get install -f
+DEBIAN_FRONTEND=noninteractive apt-get install -f
 echo "Installing PHP $PHP_VERSION"
 
-apt-fast install -y --no-install-recommends \
+DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION \
   php$PHP_VERSION-amqp \
   php$PHP_VERSION-apcu \
@@ -50,7 +50,7 @@ apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-zip \
   php$PHP_VERSION-zmq
 
-[ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends \
+[ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION$PHP_PKG_SUFFIX \
   php$PHP_VERSION-amqp$PHP_PKG_SUFFIX \
   php$PHP_VERSION-apcu$PHP_PKG_SUFFIX \
@@ -95,35 +95,35 @@ apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-zmq$PHP_PKG_SUFFIX
 
 if [[ $PHP_VERSION == "5.6" || $PHP_VERSION == "7.0" || $PHP_VERSION == "7.1" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt php$PHP_VERSION-recode
-  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt$PHP_PKG_SUFFIX php$PHP_VERSION-recode$PHP_PKG_SUFFIX
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt php$PHP_VERSION-recode
+  [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mcrypt$PHP_PKG_SUFFIX php$PHP_VERSION-recode$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION == "7.2" || $PHP_VERSION == "7.3" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-recode
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-recode
   [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-recode$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION != "8.0" && $PHP_VERSION != "8.1" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc php$PHP_VERSION-json
-  [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc$PHP_PKG_SUFFIX php$PHP_VERSION-json$PHP_PKG_SUFFIX
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc php$PHP_VERSION-json
+  [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc$PHP_PKG_SUFFIX php$PHP_VERSION-json$PHP_PKG_SUFFIX
 fi
 
 if [[ $PHP_VERSION != "5.6" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-ds
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-ds
 fi
 
 if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
-  apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
   [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium$PHP_PKG_SUFFIX
 fi
 
-apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
-apt-fast install -y --no-install-recommends php-pear
+DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
+DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php-pear
 
 for extension in ast pcov; do
-  sudo apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension" 2>/dev/null || true
-  [ "${BUILDS:?}" = "debug" ] && sudo apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension$PHP_PKG_SUFFIX" 2>/dev/null || true
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension" 2>/dev/null || true
+  [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension$PHP_PKG_SUFFIX" 2>/dev/null || true
 done
 
 

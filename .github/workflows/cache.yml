@@ -12,6 +12,7 @@ jobs:
         container: [22.04, 20.04, 18.04]
         php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
         builds: ['debug', 'release']
+        libs: ['true', 'false']
     if: "!contains(github.event.head_commit.message, 'skip-cache')"
     steps:
       - name: Checkout
@@ -22,6 +23,7 @@ jobs:
         env:
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
+          LIBS: ${{ matrix.libs }}
 
       - name: Get ZSTD_DIR
         id: zstd
@@ -50,6 +52,7 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.workspace }}
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
+          LIBS: ${{ matrix.libs }}
         run: bash scripts/package.sh
 
       - name: Upload zstd Artifact
