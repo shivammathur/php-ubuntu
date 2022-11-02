@@ -18,9 +18,9 @@ release_create() {
 }
 
 release_upload() {
-  gh release download -p "build.log" || true
-  release_cds
+  gh release download -p "build.log" || true  
   gh release upload "builds" ./scripts/install.sh "${assets[@]}" --clobber
+  release_cds
 }
 
 log() {
