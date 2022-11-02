@@ -28,7 +28,7 @@ jobs:
           USE_CACHE: 'false'
         run: bash scripts/install-zstd.sh
       - name: Upload zstd Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.zstd.outputs.zstd_dir }}-ubuntu${{ matrix.container }}
           path: /opt/zstd
