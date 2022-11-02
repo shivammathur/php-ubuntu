@@ -27,7 +27,7 @@ jobs:
 
       - name: Get ZSTD_DIR
         id: zstd
-        run: echo "::set-output name=ZSTD_DIR::zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)"
+        run: echo "ZSTD_DIR=zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)" | sudo tee -a "$GITHUB_OUTPUT"
 
       - name: Add ZSTD
         env:
