@@ -104,7 +104,7 @@ if [[ $PHP_VERSION == "7.2" || $PHP_VERSION == "7.3" ]]; then
   [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-recode$PHP_PKG_SUFFIX
 fi
 
-if [[ $PHP_VERSION != "8.0" && $PHP_VERSION != "8.1" ]]; then
+if [[ $PHP_VERSION != "8.0" && $PHP_VERSION != "8.1" && $PHP_VERSION != "8.2" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc php$PHP_VERSION-json
   [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-xmlrpc$PHP_PKG_SUFFIX php$PHP_VERSION-json$PHP_PKG_SUFFIX
 fi
@@ -137,10 +137,10 @@ done
 for extension in sqlsrv pdo_sqlsrv; do
   if [[ $PHP_VERSION =~ 7.[0-3] ]]; then
     sudo pecl install -f "$extension"-5.9.0
-  elif [[ $PHP_VERSION =~ 7.4|8.[0-1] ]]; then
+  elif [[ $PHP_VERSION =~ 7.4|8.[0-2] ]]; then
     sudo pecl install -f "$extension"
   fi
-  if [[ $PHP_VERSION =~ 7.[0-4]|8.[0-1] ]]; then
+  if [[ $PHP_VERSION =~ 7.[0-4]|8.[0-2] ]]; then
     sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
     phpenmod -v "$PHP_VERSION" "$extension"
   fi  
