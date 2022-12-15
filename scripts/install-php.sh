@@ -1,6 +1,14 @@
+. /etc/os-release
 [ "${BUILDS:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
 DEBIAN_FRONTEND=noninteractive apt-get install -f
+
+enable_pecl_extension() {
+  local extension=$1
+  sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
+  phpenmod -v "$PHP_VERSION" "$extension"
+}
+
 echo "Installing PHP $PHP_VERSION"
 
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
@@ -141,10 +149,18 @@ for extension in sqlsrv pdo_sqlsrv; do
     sudo pecl install -f "$extension"
   fi
   if [[ $PHP_VERSION =~ 7.[0-4]|8.[0-2] ]]; then
-    sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
-    phpenmod -v "$PHP_VERSION" "$extension"
+    enable_pecl_extension "$extension"
   fi  
 done
+
+if [ "$PHP_VERSION" = "5.6" ]; then
+  if [[ "$VERSION_ID" = "18.04" || "$VERSION_ID" = "20.04" ]]; then
+    DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mongo
+  else
+    sudo pecl install -f mongo
+    enable_pecl_extension mongo
+  fi
+fi
 
 sudo rm -rf /var/cache/apt/archives/*.deb || true
 sudo rm -rf /var/cache/apt/archives/*.ddeb || true
