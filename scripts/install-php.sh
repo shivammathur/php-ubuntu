@@ -129,9 +129,6 @@ fi
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php-pear
 
-# Workaround for a bug in Microsoft unixodbc-dev. sqltypes.h includes a non existing unixodbc.h
-curl -o /usr/include/x86_64-linux-gnu/unixodbc.h -sL https://fossies.org/linux/privat/unixODBC-2.3.11.tar.gz/unixODBC-2.3.11/unixodbc.h?m=b || true
-
 for extension in ast pcov; do
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension" 2>/dev/null || true
   [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-$extension$PHP_PKG_SUFFIX" 2>/dev/null || true
