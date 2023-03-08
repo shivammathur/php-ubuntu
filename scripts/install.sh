@@ -27,7 +27,7 @@ fix_service() {
 }
 
 fix_packages() {
-  if [ "$VERSION_ID" = "18.04" ] && ! sudo apt-get check 2>/dev/null; then
+  if ! sudo apt-get check 2>/dev/null; then
     sudo apt --fix-broken install
   fi
 }
