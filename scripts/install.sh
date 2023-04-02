@@ -28,7 +28,7 @@ fix_service() {
 
 fix_packages() {
   if ! sudo apt-get check 2>/dev/null; then
-    sudo apt --fix-broken install
+    sudo apt --fix-broken install || (sudo apt-get update && sudo apt --fix-broken install)
   fi
 }
 
