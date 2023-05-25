@@ -14,7 +14,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 apt-fast automake gcc 
 DEBIAN_FRONTEND=noninteractive apt-get purge -y libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
 if [[ "${LIBS:?}" = "false" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y php"${PHP_VERSION:?}"-common php"${PHP_VERSION:?}"-imagick
-  DEBIAN_FRONTEND=noninteractive apt-get purge -y php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common
+  DEBIAN_FRONTEND=noninteractive apt-get purge -y php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common php-common
   DEBIAN_FRONTEND=noninteractive apt-get install -y snmp snmp-mibs-downloader firebird-dev freetds-dev libargon2-dev libaspell-dev libc-client2007e libdb-dev libhunspell-dev libjson-c-dev libkmod-dev libmemcached-dev libnorm-dev libpgm-dev libpq-dev libqdbm-dev librabbitmq-dev libsnmp-dev libssl-dev libtidy-dev libtommath-dev libtiff5-dev libwebp-dev libxpm-dev libxslt1-dev libyaml-dev libzip-dev tzdata
   DEBIAN_FRONTEND=noninteractive apt-get purge -y libgd3 libavif13 libyuv0 libaom3 libdav1d5 libgav1-0 libabsl20210324 || true  
 fi
