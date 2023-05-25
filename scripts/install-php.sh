@@ -150,6 +150,10 @@ for extension in sqlsrv pdo_sqlsrv; do
   fi
 done
 
+if [[ $PHP_VERSION =~ 8.[0-2] ]]; then
+  sudo pecl install -f memcache && enable_pecl_extension "$extension"
+fi
+
 if [ "$PHP_VERSION" = "5.6" ]; then
   if [ "$VERSION_ID" = "20.04" ]; then
     DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mongo
