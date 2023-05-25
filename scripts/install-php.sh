@@ -159,6 +159,8 @@ if [ "$PHP_VERSION" = "5.6" ]; then
   fi
 fi
 
+DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
+
 sudo rm -rf /var/cache/apt/archives/*.deb || true
 sudo rm -rf /var/cache/apt/archives/*.ddeb || true
 
