@@ -28,7 +28,7 @@ fix_service() {
 
 fix_packages() {
   if ! sudo apt-get check 2>/dev/null; then
-    sudo apt --fix-broken install || (sudo apt-get update && sudo apt --fix-broken install)
+    sudo apt --fix-broken install -y || (sudo apt-get update && sudo apt --fix-broken install -y)
   fi
 }
 
@@ -62,6 +62,7 @@ check_reload() {
   fi
 }
 
+export DEBIAN_FRONTEND=noninteractive
 . /etc/os-release
 version=$1
 builds=${2:-release}
