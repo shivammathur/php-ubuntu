@@ -36,7 +36,6 @@ DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-mbstring \
   php$PHP_VERSION-memcache \
   php$PHP_VERSION-memcached \
-  php$PHP_VERSION-mongodb \
   php$PHP_VERSION-msgpack \
   php$PHP_VERSION-mysql \
   php$PHP_VERSION-odbc \
@@ -82,7 +81,6 @@ DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-mbstring$PHP_PKG_SUFFIX \
   php$PHP_VERSION-memcache$PHP_PKG_SUFFIX \
   php$PHP_VERSION-memcached$PHP_PKG_SUFFIX \
-  php$PHP_VERSION-mongodb$PHP_PKG_SUFFIX \
   php$PHP_VERSION-msgpack$PHP_PKG_SUFFIX \
   php$PHP_VERSION-mysql$PHP_PKG_SUFFIX \
   php$PHP_VERSION-odbc$PHP_PKG_SUFFIX \
@@ -163,6 +161,13 @@ if [ "$PHP_VERSION" = "5.6" ]; then
     sudo pecl install -f mongo
     enable_pecl_extension mongo
   fi
+fi
+
+if [[ $PHP_VERSION =~ 7.4|8.[0-2] ]]; then
+  sudo pecl install -f mongodb && enable_pecl_extension mongodb
+else
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mongodb
+  [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-mongodb$PHP_PKG_SUFFIX" 2>/dev/null || true
 fi
 
 DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
