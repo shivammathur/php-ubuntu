@@ -1,4 +1,5 @@
 add_assets() {
+  ls -laR ./builds
   for asset in ./builds/*/*; do
     assets+=("$asset")
   done
@@ -18,8 +19,11 @@ release_create() {
 }
 
 release_upload() {
-  gh release download -p "build.log" || true  
-  gh release upload "builds" ./scripts/install.sh "${assets[@]}" --clobber
+  gh release download -p "build.log" || true
+  gh release upload "builds" ./scripts/install.sh --clobber
+  for asset in ./scripts/install.sh "${assets[@]}"; do
+    gh release upload "builds" "$asset" --clobber
+  done  
   release_cds
 }
 

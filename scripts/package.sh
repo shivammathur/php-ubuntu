@@ -14,21 +14,19 @@ sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
 sudo mkdir -p /tmp/php/usr/sbin
 sudo cp "$GITHUB_WORKSPACE"/scripts/merge_status.py /tmp/php/usr/sbin/merge_status
+cat /tmp/php/var/lib/dpkg/status-diff
 sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
 sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
 sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 . /etc/os-release
 SEMVER="$(php -v | head -n 1 | cut -f 2 -d ' ' | cut -f 1 -d '-')"
-SUFFIX=""
-if [ "${LIBS:?}" = "true" ]; then
-  SUFFIX="-libs";
-fi
 (
   cd /tmp/php || exit 1
-  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst
-  cp ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst ../php_"$SEMVER$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$SUFFIX".tar.zst
+  sudo tar cf - ./* | zstd -22 -T0 --ultra > ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
+  cp ../php_"$PHP_VERSION$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst ../php_"$SEMVER$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
 )
 cd "$GITHUB_WORKSPACE" || exit 1
 mkdir builds
 sudo mv /tmp/*.zst ./builds
+ls -laR ./builds
