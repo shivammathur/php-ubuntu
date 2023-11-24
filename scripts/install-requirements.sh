@@ -1,3 +1,10 @@
+purge_packages() {
+    packages=("$@")
+    for package in "${packages[@]}"; do
+      DEBIAN_FRONTEND=noninteractive apt-get purge -y "$package" || true
+    done
+}
+
 . /etc/os-release
 export _APTMGR=apt-get
 apt-get update && apt-get install -y curl sudo software-properties-common
@@ -11,8 +18,8 @@ echo "deb https://apt.postgresql.org/pub/repos/apt/ $VERSION_CODENAME-pgdg main"
 echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/$VERSION_ID/prod $VERSION_CODENAME main" | tee /etc/apt/sources.list.d/microsoft-prod.list
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 apt-fast automake gcc g++ git jq make pkg-config shtool libtool sudo systemd unzip 
-DEBIAN_FRONTEND=noninteractive apt-get purge -y libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
+purge_packages libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
 DEBIAN_FRONTEND=noninteractive apt-get install -y php"${PHP_VERSION:?}"-common php"${PHP_VERSION:?}"-imagick
-DEBIAN_FRONTEND=noninteractive apt-get purge -y php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common php-common
+purge_packages php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common php-common
 DEBIAN_FRONTEND=noninteractive apt-get install -y snmp snmp-mibs-downloader firebird-dev freetds-dev libargon2-dev libaspell-dev libc-client2007e libdb-dev libhunspell-dev libjson-c-dev libkmod-dev libnorm-dev libpgm-dev libpq-dev libqdbm-dev librabbitmq-dev libsnmp-dev libssl-dev libtidy-dev libtommath-dev libtiff5-dev libwebp-dev libxpm-dev libxslt1-dev libyaml-dev libzip-dev tzdata
-DEBIAN_FRONTEND=noninteractive apt-get purge -y libgd3 libavif13 libyuv0 libaom3 libdav1d5 libgav1-0 libabsl20210324 || true
+purge_packages libgd3 libavif13 libyuv0 libaom3 libdav1d5 libgav1-0 libabsl20210324
