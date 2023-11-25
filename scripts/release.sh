@@ -21,7 +21,7 @@ release_create() {
 release_upload() {
   gh release download -p "build.log" || true
   gh release upload "builds" ./scripts/install.sh --clobber
-  for asset in ./scripts/install.sh "${assets[@]}"; do
+  for asset in "${assets[@]}" ./scripts/install.sh; do
     gh release upload "builds" "$asset" --clobber
   done  
   release_cds

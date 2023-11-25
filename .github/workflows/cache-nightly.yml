@@ -12,16 +12,19 @@ jobs:
         container: [22.04, 20.04]
         php-versions: ['8.3', '8.4']
         builds: ['debug', 'release']
+        ts: [zts, nts]
     if: "!contains(github.event.head_commit.message, 'skip-cache')"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Install requirements
-        run: bash scripts/install-requirements-nightly.sh
+        run: bash scripts/install-requirements.sh
         env:
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
+          NIGHTLY: 'true'
+          TS: ${{ matrix.ts }}
 
       - name: Get ZSTD_DIR
         id: zstd
@@ -43,13 +46,16 @@ jobs:
         env:
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
-        run: bash scripts/install-php-nightly.sh
+          NIGHTLY: 'true'
+          TS: ${{ matrix.ts }}
+        run: bash scripts/install-php.sh
 
       - name: Build package
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
+          TS: ${{ matrix.ts }}
         run: bash scripts/package.sh
 
       - name: Upload zstd Artifact
@@ -71,8 +77,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-20.04]
-        php-versions: ['8.3', '8.4']
+        php-versions: ['8.4']
         builds: ['debug', 'release']
+        ts: [nts, zts]
     if: "!contains(github.event.head_commit.message, 'skip-tests')"
     steps:
       - name: Checkout
@@ -88,7 +95,7 @@ jobs:
         run: sed -i -e '/releases/d' -e '$s/fix_packages//' -e '1s/$/\n\nset -x/' scripts/install.sh
 
       - name: Setup PHP
-        run: bash scripts/install.sh ${{ matrix.php-versions }} ${{ matrix.builds }}
+        run: bash scripts/install.sh ${{ matrix.php-versions }} ${{ matrix.builds }} ${{ matrix.ts }}
 
       - name: Switch versions
         run: |

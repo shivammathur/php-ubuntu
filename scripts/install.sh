@@ -66,8 +66,9 @@ export DEBIAN_FRONTEND=noninteractive
 . /etc/os-release
 version=$1
 builds=${2:-release}
+ts=${3:-nts}
 [ "${builds:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
-tar_file=php_"$version$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
+tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
 check_reload
 install
 fix_alternatives
