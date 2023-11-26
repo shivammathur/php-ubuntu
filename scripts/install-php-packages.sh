@@ -165,6 +165,8 @@ else
   [ "${BUILDS:?}" = "debug" ] && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-mongodb$PHP_PKG_SUFFIX" 2>/dev/null || true
 fi
 
+add_swoole
+
 DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
 
 sudo rm -rf /var/cache/apt/archives/*.deb || true
