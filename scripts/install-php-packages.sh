@@ -1,13 +1,8 @@
 . /etc/os-release
+. ./scripts/extensions.sh
 [ "${BUILDS:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
 DEBIAN_FRONTEND=noninteractive apt-get install -f
-
-enable_pecl_extension() {
-  local extension=$1
-  sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini
-  phpenmod -v "$PHP_VERSION" "$extension"
-}
 
 echo "Installing PHP $PHP_VERSION"
 

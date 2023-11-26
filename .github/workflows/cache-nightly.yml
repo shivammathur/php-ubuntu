@@ -56,7 +56,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
           TS: ${{ matrix.ts }}
-        run: bash scripts/package.sh
+        run: bash scripts/package-php.sh
 
       - name: Upload zstd Artifact
         if: matrix.php-versions == '8.0'
