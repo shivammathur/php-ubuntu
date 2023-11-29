@@ -14,13 +14,12 @@ old_status = status + '-orig'
 listing = parse(status)
 old_listing = parse(old_status)
 
+required = ['libpcre16-3', 'libpcre2-8-0', 'libpcre2-16-0', 'libpcre2-32-0', 'libpcre2-dev', 'libpcre2-posix3', 'libpcre3', 'libpcre3-dev', 'libpcre32-3', 'libpcrecpp0v5']
+
 new_listing={}
 for key, value in listing.items():
-  if key not in old_listing or listing[key] != old_listing[key]:
+  if key not in old_listing or listing[key] != old_listing[key] or key in required:
     new_listing[key] = value
-
-if 'libpcre3' in listing:
-  new_listing['libpcre3'] = listing['libpcre3']
 
 dff = open(status + '-diff', "w")
 for key in sorted(new_listing):

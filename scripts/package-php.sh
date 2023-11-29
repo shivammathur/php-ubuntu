@@ -18,6 +18,8 @@ cat /tmp/php/var/lib/dpkg/status-diff
 sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
 sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
 sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
+sudo cp -a /usr/lib/x86_64-linux-gnu/libpcre* /tmp/php/usr/lib/x86_64-linux-gnu/
+sudo cp -a /lib/x86_64-linux-gnu/libpcre* /tmp/php/usr/lib/x86_64-linux-gnu/
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 . /etc/os-release
 SEMVER="$(php -v | head -n 1 | cut -f 2 -d ' ' | cut -f 1 -d '-')"
