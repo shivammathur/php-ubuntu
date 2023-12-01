@@ -1,7 +1,9 @@
 name: Nightly Cache PHP
 on:
-  - push
-  - workflow_dispatch
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 1-31/2 * *'
 jobs:
   cache:
     container: ubuntu:${{ matrix.container }}
