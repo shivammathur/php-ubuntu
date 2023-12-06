@@ -116,6 +116,10 @@ if [[ $PHP_VERSION != "5.6" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-ds
 fi
 
+if [[ $PHP_VERSION != "5.6" ]]; then
+  DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-psr || true
+fi
+
 if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium
   [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium$PHP_PKG_SUFFIX
