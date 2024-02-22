@@ -20,6 +20,7 @@ DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION-curl \
   php$PHP_VERSION-dba \
   php$PHP_VERSION-dev \
+  php$PHP_VERSION-embed \
   php$PHP_VERSION-enchant \
   php$PHP_VERSION-fpm \
   php$PHP_VERSION-gd \
