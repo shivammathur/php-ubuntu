@@ -143,7 +143,9 @@ for extension in sqlsrv pdo_sqlsrv; do
     sudo pecl install -f "$extension"-5.9.0 && enable_pecl_extension "$extension"
   elif [[ $PHP_VERSION =~ 7.4 ]]; then
     sudo pecl install -f "$extension"-5.10.1 && enable_pecl_extension "$extension"
-  elif [[ $PHP_VERSION =~ 8.[0-2] ]]; then
+  elif [[ $PHP_VERSION =~ 8.0 ]]; then
+    sudo pecl install -f "$extension"-5.11.1 && enable_pecl_extension "$extension"
+  elif [[ $PHP_VERSION =~ 8.[1-2] ]]; then
     sudo pecl install -f "$extension" && enable_pecl_extension "$extension"
   fi
 done
