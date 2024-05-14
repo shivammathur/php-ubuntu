@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if [ ${NIGHTLY:?} = 'true' ] || [ ${TS:?} = 'zts' ]; then
+. /etc/os-release
+
+if [ ${NIGHTLY:?} = 'true' ] || [ ${TS:?} = 'zts' ] || [ "$VERSION_ID" = "24.04" ]; then
   echo php-builder;
 else
   echo 'packages';
