@@ -1,18 +1,55 @@
-name: Cache PHP
+name: Cache PHP for stable versions
 on:
-  - push
-  - workflow_dispatch
+  push:
+  workflow_dispatch:
+    inputs:
+      php-versions:
+        description: 'PHP version to build'
+        default: '5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3'
+        required: false
+      builds:
+        description: 'Build type'
+        default: 'debug release'
+        required: false
+      ts:
+        description: 'Type safety'
+        default: 'nts zts'
+        required: false
+      containers:
+        description: 'OS containers'
+        default: '24.04 22.04 20.04'
+        required: false
+
+env:
+  PHP_VERSIONS: '5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3'
+  BUILDS: 'debug release'
+  TS: 'nts zts'
+  CONTAINERS: '24.04 22.04 20.04'
+
 jobs:
+  get-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Matrix
+        id: get-matrix
+        run: bash scripts/get-matrix.sh
+        env:
+          PHP_VERSIONS: ${{ inputs.php-versions || env.PHP_VERSIONS }}
+          BUILDS: ${{ inputs.builds || env.BUILDS }}
+          TS: ${{ inputs.ts || env.TS }}
+          CONTAINERS: ${{ inputs.containers || env.CONTAINERS }}
   cache:
+    needs: get-matrix
     container: ubuntu:${{ matrix.container }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        container: [24.04, 22.04, 20.04]
-        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
-        builds: ['debug', 'release']
-        ts: [nts, zts]
+      matrix: ${{fromJson(needs.get-matrix.outputs.matrix)}}
     if: "!contains(github.event.head_commit.message, 'skip-cache')"
     steps:
       - name: Checkout
@@ -72,14 +109,10 @@ jobs:
           path: builds
   tests:
     runs-on: ${{ matrix.os }}
-    needs: cache
+    needs: [get-matrix, cache]
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04]
-        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
-        builds: ['debug', 'release']
-        ts: [nts, zts]
+      matrix: ${{fromJson(needs.get-matrix.outputs.matrix)}}
     if: "!contains(github.event.head_commit.message, 'skip-tests')"
     steps:
       - name: Checkout
@@ -126,7 +159,7 @@ jobs:
         run: sudo apt-get check      
   release:
     runs-on: ubuntu-latest
-    needs: [cache, tests]
+    needs: [get-matrix, cache, tests]
     if: "!contains(github.event.head_commit.message, 'skip-release')"
     steps:
       - name: Checkout

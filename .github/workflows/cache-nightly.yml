@@ -1,4 +1,4 @@
-name: Nightly Cache PHP
+name: Cache PHP for nightly versions
 on:
   push:
   workflow_dispatch:
