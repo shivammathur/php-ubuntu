@@ -14,7 +14,7 @@ old_status = status + '-orig'
 listing = parse(status)
 old_listing = parse(old_status)
 
-required = ['libpcre16-3', 'libpcre2-8-0', 'libpcre2-16-0', 'libpcre2-32-0', 'libpcre2-dev', 'libpcre2-posix3', 'libpcre3', 'libpcre3-dev', 'libpcre32-3', 'libpcrecpp0v5', 'libde265-0']
+required = ['libpcre16-3', 'libpcre2-8-0', 'libpcre2-16-0', 'libpcre2-32-0', 'libpcre2-dev', 'libpcre2-posix3', 'libpcre3', 'libpcre3-dev', 'libpcre32-3', 'libpcrecpp0v5', 'libde265-0', 'libblkid1', 'libmount1', 'libtiff6', 'libuuid1', 'libexpat1']
 
 new_listing={}
 for key, value in listing.items():
