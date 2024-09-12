@@ -10,6 +10,7 @@ for file in $(git log -p -n 1 --name-only | sed 's/^.*\(\s\).*$/\1/' | xargs -L1
   fi
 done
 sudo touch /var/lib/dpkg/status-diff
+sudo cp "$GITHUB_WORKSPACE"/scripts/required /tmp/required
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
 sudo mkdir -p /tmp/php/usr/sbin
