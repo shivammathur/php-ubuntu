@@ -11,7 +11,10 @@ libpcrecpp0v5
 libde265-0
 libblkid1
 libmount1
+libtiff-dev
 libtiff5
+libtiffxx5
 libtiff6
 libuuid1
 libexpat1
+libexpat1-dev
