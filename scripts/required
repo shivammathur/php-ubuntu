@@ -18,3 +18,6 @@ libtiff6
 libuuid1
 libexpat1
 libexpat1-dev
+udev
+libbrotli1
+libbrotli-dev

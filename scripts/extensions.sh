@@ -22,8 +22,8 @@ configure_swoole() {
 add_swoole() {
   pecl_ini_file="$(sudo pecl config-get php_ini)"
   if [[ "$PHP_VERSION" =~ 7.[2-4] ]]; then
-    sudo pecl install -f swoole-4.8.13 && configure_swoole "$pecl_ini_file"
+    yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole-4.8.13 && configure_swoole "$pecl_ini_file"
   elif [[ "$PHP_VERSION" =~ 8.[0-4] ]]; then
-    sudo pecl install -f swoole && configure_swoole "$pecl_ini_file"
+    yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole && configure_swoole "$pecl_ini_file"
   fi
 }
