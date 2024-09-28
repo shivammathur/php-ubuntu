@@ -33,7 +33,7 @@ jobs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Matrix
         id: get-matrix
@@ -53,7 +53,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-cache')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install requirements
         run: bash scripts/install-requirements.sh
@@ -95,17 +95,10 @@ jobs:
           TS: ${{ matrix.ts }}
         run: bash scripts/package-php.sh
 
-      - name: Upload zstd Artifact
-        if: matrix.php-versions == '8.0'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.zstd.outputs.zstd_dir }}-ubuntu${{ matrix.container }}
-          path: /opt/zstd
-
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.php-versions }}
+          name: ubuntu-${{ matrix.container }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
           path: builds
   tests:
     runs-on: ${{ matrix.os }}
@@ -116,12 +109,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-tests')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.php-versions }}
+          name: ${{ matrix.os }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
           path: /tmp
 
       - name: Patch script
@@ -163,18 +156,18 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-release')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create builds directory  
         run: mkdir builds
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: builds
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
 

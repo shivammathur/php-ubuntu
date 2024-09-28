@@ -12,7 +12,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-build')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install requirements
         run: apt-get update && apt-get install curl make gcc jq unzip -y
       - name: Get ZSTD_DIR
@@ -28,7 +28,7 @@ jobs:
           USE_CACHE: 'false'
         run: bash scripts/install-zstd.sh
       - name: Upload zstd Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.zstd.outputs.zstd_dir }}-ubuntu${{ matrix.container }}
           path: /opt/zstd
