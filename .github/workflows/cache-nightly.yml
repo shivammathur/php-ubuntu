@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         container: [24.04, 22.04, 20.04]
-        php-versions: ['8.4']
+        php-versions: ['8.4', '8.5']
         builds: ['debug', 'release']
         ts: [zts, nts]
     if: "!contains(github.event.head_commit.message, 'skip-nightly-cache')"
@@ -79,7 +79,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04]
-        php-versions: ['8.4']
+        php-versions: ['8.4', '8.5']
         builds: ['debug', 'release']
         ts: [nts, zts]
     if: "!contains(github.event.head_commit.message, 'skip-tests')"
