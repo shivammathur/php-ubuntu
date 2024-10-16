@@ -62,6 +62,11 @@ check_reload() {
   fi
 }
 
+fix_redis_linking() {
+  echo -e "; priority=25\nextension=redis.so" | sudo tee /etc/php/"$version"/mods-available/redis.ini
+  [ "$(find /etc/php/"$version" -name "25-redis.ini" | wc -l)" -gt 0 ] && sudo find /etc/php/"$version" -name "20-redis.ini" -delete
+}
+
 export DEBIAN_FRONTEND=noninteractive
 . /etc/os-release
 version=$1
@@ -75,3 +80,4 @@ fix_alternatives
 fix_service
 fix_list
 fix_packages
+fix_redis_linking
