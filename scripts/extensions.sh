@@ -5,6 +5,12 @@ fetch_module() {
   sudo curl -o /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini -sL https://raw.githubusercontent.com/shivammathur/php-builder/main/config/modules/"$extension".ini 
 }
 
+add_module() {
+  local extension=$1
+  local priority=${2:-20}
+  echo -e "; priority=$priority\nextension=$extension.so" | tee /etc/php/"$PHP_VERSION"/mods-available/"$extension".ini
+}
+
 enable_pecl_extension() {
   local extension=$1
   fetch_module "$extension"
@@ -36,4 +42,16 @@ add_swoole() {
       configure_swoole "$pecl_ini_file"
     )
   fi
+}
+
+add_oauth_php_70() {
+  git clone https://github.com/php/pecl-web_services-oauth -b 2.0.8
+  (
+    cd pecl-web_services-oauth
+    phpize
+    ./configure --enable-oauth
+    make -j$(nproc)
+    make install
+    add_module oauth
+  )
 }

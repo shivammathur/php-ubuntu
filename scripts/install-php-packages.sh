@@ -122,6 +122,10 @@ if [[ $PHP_VERSION = "7.0" || $PHP_VERSION = "7.1" ]]; then
   [ "${BUILDS:?}" = "debug" ] && apt-fast install -y --no-install-recommends php$PHP_VERSION-sodium$PHP_PKG_SUFFIX
 fi
 
+if [[ $PHP_VERSION = "7.0" ]]; then
+  add_oauth_php_70
+fi
+
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends libpcre3-dev libsodium-dev libpq-dev unixodbc-dev
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php-pear
 
