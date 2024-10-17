@@ -4,9 +4,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y libxpm-dev libwebp-dev libpcre
 curl -o /tmp/install.sh -sL "https://github.com/shivammathur/php-builder/releases/download/$PHP_VERSION/install.sh"
 bash /tmp/install.sh github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}"
 add_swoole
-if [[ $PHP_VERSION = "7.0" ]]; then
-  add_oauth_php_70
-fi
+add_oauth php-builder
 
 . /etc/os-release
 . ./scripts/packages.sh
