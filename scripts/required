@@ -1,4 +1,7 @@
 debsuryorg-archive-keyring
+gir1.2-glib-2.0
+libglib2.0-0t64
+libglib2.0-bin
 libpcre16-3
 libpcre2-8-0
 libpcre2-16-0
