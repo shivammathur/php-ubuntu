@@ -118,7 +118,7 @@ jobs:
           path: /tmp
 
       - name: Patch script
-        run: sed -i -e '/releases/d' -e '$s/fix_packages//' -e '1s/$/\n\nset -x/' scripts/install.sh
+        run: sed -i -e '/releases/d' -e '/^\s*fix_packages\s*$/d' -e '1s/$/\n\nset -x/' scripts/install.sh
 
       - name: Setup PHP
         run: bash scripts/install.sh ${{ matrix.php-versions }} ${{ matrix.builds }} ${{ matrix.ts }}
