@@ -33,6 +33,7 @@ configure_extension() {
 }
 
 add_swoole() {
+  DEBIAN_FRONTEND=noninteractive apt-get install -y libbrotli-dev
   pecl_ini_file="$(sudo pecl config-get php_ini)"
   if [[ "$PHP_VERSION" =~ 7.[2-4] ]]; then
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole-4.8.13 && configure_extension swoole
