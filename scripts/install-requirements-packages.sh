@@ -3,7 +3,7 @@
 . ./scripts/packages.sh
 add_ppa
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 apt-fast automake gcc g++ git jq make pkg-config shtool libtool sudo systemd unzip 
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 apt-fast automake gcc g++ git jq make pkg-config shtool libtool sudo systemd unzip
 purge_packages libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
 DEBIAN_FRONTEND=noninteractive apt-get install -y php"${PHP_VERSION:?}"-common php"${PHP_VERSION:?}"-imagick
 purge_packages php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common php-common

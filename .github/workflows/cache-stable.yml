@@ -17,14 +17,16 @@ on:
         required: false
       containers:
         description: 'OS containers'
-        default: '24.04 22.04 20.04'
+        default: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
         required: false
 
 env:
   PHP_VERSIONS: '5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4'
   BUILDS: 'debug release'
   TS: 'nts zts'
-  CONTAINERS: '24.04 22.04 20.04'
+  CONTAINERS: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+  BASE_OS: ubuntu-24.04
+  BASE_OS_ARM: ubuntu-24.04-arm
 
 jobs:
   get-matrix:
@@ -43,10 +45,12 @@ jobs:
           BUILDS: ${{ inputs.builds || env.BUILDS }}
           TS: ${{ inputs.ts || env.TS }}
           CONTAINERS: ${{ inputs.containers || env.CONTAINERS }}
+          BASE_OS: ${{ env.BASE_OS }}
+          BASE_OS_ARM: ${{ env.BASE_OS_ARM }}
   cache:
     needs: get-matrix
-    container: ubuntu:${{ matrix.container }}
-    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    runs-on: ${{ matrix.container-base }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.get-matrix.outputs.matrix)}}
@@ -61,7 +65,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php-versions }}
           BUILDS: ${{ matrix.builds }}
           NIGHTLY: 'false'
-          TS: ${{ matrix.ts }}          
+          TS: ${{ matrix.ts }}
 
       - name: Get ZSTD_DIR
         id: zstd
@@ -98,7 +102,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ubuntu-${{ matrix.container }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
+          name: ${{ matrix.os }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
           path: builds
   tests:
     runs-on: ${{ matrix.os }}

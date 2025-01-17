@@ -1,20 +1,61 @@
 name: Cache PHP for nightly versions
 on:
   push:
-  workflow_dispatch:
   schedule:
     - cron: '0 4 1-31/2 * *'
+  workflow_dispatch:
+    inputs:
+      php-versions:
+        description: 'PHP version to build'
+        default: '8.5'
+        required: false
+      builds:
+        description: 'Build type'
+        default: 'debug release'
+        required: false
+      ts:
+        description: 'Type safety'
+        default: 'nts zts'
+        required: false
+      containers:
+        description: 'OS containers'
+        default: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+        required: false
+
+env:
+  PHP_VERSIONS: '8.5'
+  BUILDS: 'debug release'
+  TS: 'nts zts'
+  CONTAINERS: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+  BASE_OS: ubuntu-24.04
+  BASE_OS_ARM: ubuntu-24.04-arm
+
 jobs:
-  cache:
-    container: ubuntu:${{ matrix.container }}
+  get-matrix:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get Matrix
+        id: get-matrix
+        run: bash scripts/get-matrix.sh
+        env:
+          PHP_VERSIONS: ${{ inputs.php-versions || env.PHP_VERSIONS }}
+          BUILDS: ${{ inputs.builds || env.BUILDS }}
+          TS: ${{ inputs.ts || env.TS }}
+          CONTAINERS: ${{ inputs.containers || env.CONTAINERS }}
+          BASE_OS: ${{ env.BASE_OS }}
+          BASE_OS_ARM: ${{ env.BASE_OS_ARM }}
+  cache:
+    needs: get-matrix
+    container: ${{ matrix.container }}
+    runs-on: ${{ matrix.container-base }}
     strategy:
       fail-fast: false
-      matrix:
-        container: [24.04, 22.04, 20.04]
-        php-versions: ['8.5']
-        builds: ['debug', 'release']
-        ts: [zts, nts]
+      matrix: ${{fromJson(needs.get-matrix.outputs.matrix)}}
     if: "!contains(github.event.head_commit.message, 'skip-nightly-cache')"
     steps:
       - name: Checkout
@@ -63,18 +104,14 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ubuntu-${{ matrix.container }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
+          name: ${{ matrix.os }}-${{ matrix.php-versions }}-${{ matrix.builds }}-${{ matrix.ts }}
           path: builds
   tests:
     runs-on: ${{ matrix.os }}
-    needs: cache
+    needs: [get-matrix, cache]
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04]
-        php-versions: ['8.5']
-        builds: ['debug', 'release']
-        ts: [nts, zts]
+      matrix: ${{fromJson(needs.get-matrix.outputs.matrix)}}
     if: "!contains(github.event.head_commit.message, 'skip-tests')"
     steps:
       - name: Checkout
@@ -121,7 +158,7 @@ jobs:
         run: sudo apt-get check      
   release:
     runs-on: ubuntu-latest
-    needs: [cache, tests]
+    needs: [get-matrix, cache, tests]
     if: "!contains(github.event.head_commit.message, 'skip-release')"
     steps:
       - name: Checkout

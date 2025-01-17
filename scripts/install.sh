@@ -73,7 +73,9 @@ version=$1
 builds=${2:-release}
 ts=${3:-nts}
 [ "${builds:?}" = "debug" ] && PHP_PKG_SUFFIX=-dbgsym
-tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID".tar.zst
+arch="$(arch)"
+[[ "$arch" = "aarch64" || "$arch" = "arm64" ]] && ARCH_SUFFIX='_arm64' || ARCH_SUFFIX=''
+tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$ARCH_SUFFIX".tar.zst
 check_reload
 install
 fix_alternatives
