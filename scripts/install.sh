@@ -20,10 +20,8 @@ install() {
 }
 
 fix_service() {
-  if [ "$reload" = "true" ]; then
-    sudo systemctl daemon-reload 2>/dev/null || true
-    sudo systemctl start php"$version"-fpm 2>/dev/null || true
-  fi
+  sudo systemctl daemon-reload 2>/dev/null || true
+  sudo systemctl start php"$version"-fpm 2>/dev/null || true
 }
 
 fix_packages() {
@@ -52,16 +50,6 @@ fix_alternatives() {
   wait "${to_wait[@]}"
 }
 
-check_reload() {
-  if ! [ -e /lib/systemd/system/php"$version"-fpm.service ]; then
-    reload=true
-  fi
-  if [ "$(readlink -f /etc/systemd/system/php"$version"-fpm.service)" = "/dev/null" ]; then
-    sudo rm -f /etc/systemd/system/php"$version"-fpm.service
-    reload=true
-  fi
-}
-
 fix_redis_linking() {
   echo -e "; priority=25\nextension=redis.so" | sudo tee /etc/php/"$version"/mods-available/redis.ini
   [ "$(find /etc/php/"$version" -name "25-redis.ini" | wc -l)" -gt 0 ] && sudo find /etc/php/"$version" -name "20-redis.ini" -delete || true
@@ -76,7 +64,6 @@ ts=${3:-nts}
 arch="$(arch)"
 [[ "$arch" = "aarch64" || "$arch" = "arm64" ]] && ARCH_SUFFIX='_arm64' || ARCH_SUFFIX=''
 tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$ARCH_SUFFIX".tar.zst
-check_reload
 install
 fix_alternatives
 fix_service
