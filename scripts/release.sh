@@ -2,6 +2,9 @@ add_assets() {
   ls -laR ./builds
   for asset in ./builds/*/*; do
     assets+=("$asset")
+    if [[ ! "$(basename "$asset")" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+      cds_assets+=("$asset")
+    fi
   done
 }
 
@@ -9,7 +12,7 @@ release_cds() {
   sudo cp ./scripts/cds /usr/local/bin/cds && sudo sed -i "s|REPO|$GITHUB_REPOSITORY|" /usr/local/bin/cds && sudo chmod a+x /usr/local/bin/cds
   if [[ "$GITHUB_MESSAGE" != *skip-cloudsmith* ]]; then
     cp ./scripts/install.sh ./scripts/php-ubuntu.sh
-    echo "${assets[@]}" ./scripts/php-ubuntu.sh | xargs -n 1 -P 8 cds
+    echo "${cds_assets[@]}" ./scripts/php-ubuntu.sh | xargs -n 1 -P 8 cds
   fi
 }
 
@@ -34,6 +37,7 @@ log() {
 
 version=$(date '+%Y.%m.%d')
 assets=()
+cds_assets=()
 rm -rf ./builds/zstd*
 add_assets
 cd "$GITHUB_WORKSPACE" || exit 1
