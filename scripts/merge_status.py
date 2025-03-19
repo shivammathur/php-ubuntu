@@ -20,5 +20,5 @@ for key, value in listing.items():
 olf = open(old_status, "a")
 olf.seek(0)
 olf.truncate()
-for key in sorted(old_listing):
+for key in old_listing:
     olf.write(old_listing[key])
