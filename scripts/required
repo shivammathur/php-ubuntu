@@ -5,6 +5,8 @@ libglib2.0-0t64
 libglib2.0-bin
 libharfbuzz-dev
 libharfbuzz0b
+liblzma5
+liblzma-dev
 libpcre16-3
 libpcre2-8-0
 libpcre2-16-0
@@ -29,4 +31,3 @@ libexpat1-dev
 udev
 libbrotli1
 libbrotli-dev
-liblzma-dev
