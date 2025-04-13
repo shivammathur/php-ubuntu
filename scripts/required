@@ -1,6 +1,5 @@
 debsuryorg-archive-keyring
 gir1.2-glib-2.0
-libfreetype6
 libglib2.0-0t64
 libglib2.0-bin
 libharfbuzz-dev
@@ -28,6 +27,5 @@ libtiff6
 libuuid1
 libexpat1
 libexpat1-dev
-udev
 libbrotli1
 libbrotli-dev
