@@ -19,14 +19,14 @@ on:
         required: false
       containers:
         description: 'OS containers'
-        default: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+        default: 'ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
         required: false
 
 env:
   PHP_VERSIONS: '8.5'
   BUILDS: 'debug release'
   TS: 'nts zts'
-  CONTAINERS: 'ubuntu:24.04 ubuntu:22.04 ubuntu:20.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+  CONTAINERS: 'ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
   BASE_OS: ubuntu-24.04
   BASE_OS_ARM: ubuntu-24.04-arm
 

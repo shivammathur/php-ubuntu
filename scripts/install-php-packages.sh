@@ -155,12 +155,8 @@ if [[ $PHP_VERSION =~ 8.[0-2] ]]; then
 fi
 
 if [ "$PHP_VERSION" = "5.6" ]; then
-  if [ "$VERSION_ID" = "20.04" ]; then
-    DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mongo
-  else
-    sudo pecl install -f mongo
-    enable_pecl_extension mongo
-  fi
+  sudo pecl install -f mongo
+  enable_pecl_extension mongo
 fi
 
 if [[ $PHP_VERSION =~ 7.4|8.[0-2] ]]; then
