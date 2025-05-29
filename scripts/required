@@ -1,8 +1,6 @@
 debsuryorg-archive-keyring
 libglib2.0-0t64
 gir1.2-glib-2.0
-libelf1t64
-libdw1t64
 libharfbuzz-dev
 libharfbuzz0b
 liblzma5
