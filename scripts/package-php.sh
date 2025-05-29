@@ -15,6 +15,7 @@ done
 lib_subdir="$(uname -m)-linux-gnu"
 sudo touch /var/lib/dpkg/status-diff
 sudo cp "$GITHUB_WORKSPACE"/scripts/required /tmp/required
+sudo apt-get install python3-apt -y
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo mkdir -p /tmp/php/usr/sbin /tmp/php/var/lib/dpkg/
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
