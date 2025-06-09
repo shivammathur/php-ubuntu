@@ -63,7 +63,8 @@ add_ppa_helper() {
   list_dir=/etc/apt/sources.list.d
   get_launchpad_key "$ppa" "$key_file"
   . /etc/os-release
-  echo "deb [arch="$(dpkg --print-architecture)" signed-by=$key_file] $ppa_url $VERSION_CODENAME $branches" | tee -a "$list_dir"/"${ppa/\//-}".list
+  sudo rm -rf "$list_dir"/"${ppa/\//-}".list || true
+  echo "deb [arch="$(dpkg --print-architecture)" signed-by=$key_file] $ppa_url $VERSION_CODENAME $branches" | tee -a "$list_dir"/"${ppa%%/*}"-"$ID"-"${ppa#*/}"-"$VERSION_CODENAME".list
 }
 
 add_ppa() {
