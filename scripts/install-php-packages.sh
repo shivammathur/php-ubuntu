@@ -159,7 +159,9 @@ if [ "$PHP_VERSION" = "5.6" ]; then
   enable_pecl_extension mongo
 fi
 
-if [[ $PHP_VERSION =~ 7.4|8.[0-2] ]]; then
+if [[ $PHP_VERSION =~ 7.4|8.0 ]]; then
+  sudo pecl install -f mongodb-1.20.1 && enable_pecl_extension mongodb
+elif [[ $PHP_VERSION = 8.2 ]]; then
   sudo pecl install -f mongodb && enable_pecl_extension mongodb
 else
   DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends php$PHP_VERSION-mongodb
