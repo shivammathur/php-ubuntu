@@ -74,6 +74,7 @@ add_ppa() {
   add_ppa_helper apt-fast/stable main
   add_ppa_helper git-core/ppa main
   add_ppa_helper ondrej/php main
+  add_ppa_helper ondrej/php main/debug
   curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
   curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
   echo "deb https://apt.postgresql.org/pub/repos/apt/ $VERSION_CODENAME-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
