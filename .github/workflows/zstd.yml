@@ -33,7 +33,11 @@ jobs:
           USE_CACHE: 'false'
         run: bash scripts/install-zstd.sh
       - name: Upload zstd Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.zstd.outputs.zstd_dir }}-${{ steps.zstd.outputs.container_name }}
-          path: /opt/zstd
+        env:
+          ARTIFACT: ${{ steps.zstd.outputs.zstd_dir }}-${{ steps.zstd.outputs.container_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          apt-get install git gh -y
+          cd /opt/zstd
+          tar -czvf $ARTIFACT.tar.gz *
+          gh release upload "builds" -R ${{ github.repository }} $ARTIFACT.tar.gz --clobber
