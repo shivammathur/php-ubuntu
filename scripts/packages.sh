@@ -7,10 +7,10 @@ purge_packages() {
     done
 }
 
-purge_packages() {
+add_packages() {
     packages=("$@")
     for package in "${packages[@]}"; do
-      DEBIAN_FRONTEND=noninteractive apt-get purge -y "$package" || true
+      DEBIAN_FRONTEND=noninteractive apt-get install -y "$package" || true
     done
 }
 
