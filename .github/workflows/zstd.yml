@@ -3,21 +3,26 @@ on:
   - workflow_dispatch
 jobs:
   cache:
-    container: ubuntu:${{ matrix.container }}
-    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    runs-on: ${{ contains(matrix.container, 'arm') && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
-        container: [24.04, 22.04]
+        container: [ubuntu:24.04, ubuntu:22.04, arm64v8/ubuntu:22.04, arm64v8/ubuntu:24.04]
     if: "!contains(github.event.head_commit.message, 'skip-build')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install requirements
         run: apt-get update && apt-get install curl make gcc jq unzip -y
-      - name: Get ZSTD_DIR
+      - name: Get ZSTD_DIR and CONTAINER_NAME
+        env:
+          CONTAINER: ${{ matrix.container }}
         id: zstd
-        run: echo "ZSTD_DIR=zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)" | tee -a "$GITHUB_OUTPUT"
+        shell: bash
+        run: |
+          echo "ZSTD_DIR=zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)" | tee -a "$GITHUB_OUTPUT"
+          echo "CONTAINER_NAME=${CONTAINER//[\/:]/-}" | tee -a "$GITHUB_OUTPUT"
       - name: Add ZSTD
         env:
           CONTAINER: ${{ matrix.container }}
@@ -30,5 +35,5 @@ jobs:
       - name: Upload zstd Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.zstd.outputs.zstd_dir }}-ubuntu${{ matrix.container }}
+          name: ${{ steps.zstd.outputs.zstd_dir }}-${{ steps.zstd.outputs.container_name }}
           path: /opt/zstd

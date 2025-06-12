@@ -1,5 +1,5 @@
 mkdir -p /opt/zstd
-zstd_url=$(curl -sL https://api.github.com/repos/"$REPO"/actions/artifacts | jq -r --arg zstd_dir "${ZSTD_DIR:?}-ubuntu${CONTAINER:?}" '.artifacts[] | select(.name=="\($zstd_dir)").archive_download_url' 2>/dev/null | head -n 1)
+zstd_url=$(curl -sL https://api.github.com/repos/"$REPO"/actions/artifacts | jq -r --arg zstd_dir "${ZSTD_DIR:?}-${CONTAINER//[\/:]/-}" '.artifacts[] | select(.name=="\($zstd_dir)").archive_download_url' 2>/dev/null | head -n 1)
 if [ "x$zstd_url" = "x" ] || [ "x$USE_CACHE" = "xfalse" ]; then
   apt-get install zlib1g-dev liblzma-dev liblz4-dev -y
   curl -o /tmp/zstd.tar.gz -sL https://github.com/facebook/zstd/releases/latest/download/"$ZSTD_DIR".tar.gz
