@@ -54,22 +54,33 @@ add_swoole() {
   fi
 }
 
+build_oauth() {
+  phpize
+  ./configure --enable-oauth
+  make -j$(nproc)
+  make install
+  add_module oauth
+  disable_extension oauth
+}
+
 add_oauth() {
   local source=$1
   if [[ "$PHP_VERSION" =~ 7.0 ]]; then
     git clone https://github.com/php/pecl-web_services-oauth -b 2.0.8
     (
       cd pecl-web_services-oauth
-      phpize
-      ./configure --enable-oauth
-      make -j$(nproc)
-      make install
-      add_module oauth
+      build_oauth
     )
   elif [ "$source" = "packages" ]; then
     DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends "php$PHP_VERSION-oauth"
     disable_extension oauth
-  elif [ "$source" = "php-builder" ]; then
-    yes '' 2>/dev/null | sudo pecl install oauth && add_module oauth && disable_extension oauth
+  elif [ "$source" = "php-builder" ]; then  
+    sudo pecl download oauth
+    sudo tar xf oauth-*
+    (
+      cd oauth-*/
+      [[ "$PHP_VERSION" =~ 8.5 ]] && for file in provider.c oauth.c; do sed -i 's/zend_exception_get_default()/zend_ce_exception/' $file; done
+      build_oauth
+    )
   fi
 }
