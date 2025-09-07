@@ -29,21 +29,21 @@ get() {
   fi
 }
 
+ubuntu_fingerprint() {
+  local ppa=$1
+  ppa_uri="~${ppa%/*}/+archive/ubuntu/${ppa##*/}"
+  get -s "" "${lp_api[0]}/$ppa_uri" | jq -er '.signing_key_fingerprint' 2>/dev/null \
+  || get -s "" "${lp_api[1]}/$ppa_uri" | jq -er '.signing_key_fingerprint' 2>/dev/null \
+  || get -s "" "$ppa_sp/keys/$ppa.fingerprint"
+}
+
 get_launchpad_key() {
-  local pa=$1
+  local ppa=$1
   local key_file=$2
-  sks=(
-    'https://keyserver.ubuntu.com'
-    'https://pgp.mit.edu'
-    'https://keys.openpgp.org'
-  )
-  lp_api=(
-    'https://api.launchpad.net/1.0'
-    'https://api.launchpad.net/devel'
-  )  
-  fingerprint="$(get -s "" "${lp_api[@]/%//~${ppa%/*}/+archive/ubuntu/${ppa##*/}}" | jq -r '.signing_key_fingerprint')"
+  fingerprint="$("${ID}"_fingerprint "$ppa")"
   sks_params="op=get&options=mr&exact=on&search=0x$fingerprint"
   key_urls=("${sks[@]/%/\/pks\/lookup\?"$sks_params"}")
+  key_urls+=("$ppa_sp/keys/$ppa.gpg")
   get -q "$key_file" "${key_urls[@]}"
   if [[ "$(file "$key_file")" =~ .*('Public-Key (old)'|'Secret-Key') ]]; then
     gpg --batch --yes --dearmor "$key_file" && mv "$key_file".gpg "$key_file"
@@ -62,8 +62,7 @@ add_ppa_helper() {
   echo "deb [arch="$(dpkg --print-architecture)" signed-by=$key_file] $ppa_url $VERSION_CODENAME $branches" | tee -a "$list_dir"/"${ppa%%/*}"-"$ID"-"${ppa#*/}"-"$VERSION_CODENAME".list
 }
 
-add_ppa() {
-  . /etc/os-release
+add_ppa() {  
   export _APTMGR=apt-get
   apt-get update && apt-get install -y curl sudo file jq gnupg
   add_ppa_helper apt-fast/stable main
@@ -77,4 +76,15 @@ add_ppa() {
   apt-get update
 }
 
+. /etc/os-release
+sks=(
+  'https://keyserver.ubuntu.com'
+  'https://pgp.mit.edu'
+  'https://keys.openpgp.org'
+)
+ppa_sp='https://ppa.setup-php.com'
+lp_api=(
+  'https://api.launchpad.net/1.0'
+  'https://api.launchpad.net/devel'
+)
 arch=$(dpkg --print-architecture)
