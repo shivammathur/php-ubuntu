@@ -31,6 +31,8 @@ fix_packages() {
 }
 
 fix_list() {
+  ppa_list="/etc/apt/sources.list.d/ondrej-ubuntu-php-$VERSION_CODENAME"
+  [[ -e "$ppa_list.sources" && -e "$ppa_list.list" ]] && sudo rm "$ppa_list.sources"
   if [ "$builds" = "debug" ]; then
     list=/etc/apt/sources.list.d/"$(basename "$(grep -lr "ondrej/php" /etc/apt/sources.list.d)")"
     sudo apt-get update -o Dir::Etc::sourcelist="$list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
