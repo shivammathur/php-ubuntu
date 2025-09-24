@@ -41,10 +41,12 @@ add_swoole() {
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole-5.1.6 && configure_extension swoole
   elif [[ "$PHP_VERSION" =~ 8.[1-4] ]]; then
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole && configure_extension swoole
-  elif [[ "$PHP_VERSION" = "8.5" ]]; then
+  elif [[ "$PHP_VERSION" =~ 8.[5-6] ]]; then
     git clone https://github.com/swoole/swoole-src
     (
       cd swoole-src
+      curl -o swoole.patch -sL https://patch-diff.githubusercontent.com/raw/swoole/swoole-src/pull/5823.patch
+      git apply swoole.patch
       phpize
       ./configure --enable-openssl=yes --enable-sockets=yes --enable-swoole-curl="yes"
       make -j$(nproc)
@@ -79,7 +81,10 @@ add_oauth() {
     sudo tar xf oauth-*
     (
       cd oauth-*/
-      [[ "$PHP_VERSION" =~ 8.5 ]] && for file in provider.c oauth.c; do sed -i 's/zend_exception_get_default()/zend_ce_exception/' $file; done
+      if [[ "$PHP_VERSION" =~ 8.[5-6] ]]; then
+        for file in provider.c oauth.c; do sed -i 's/zend_exception_get_default()/zend_ce_exception/' $file; done
+        sed -i 's#ext/standard/php_smart_string.h#Zend/zend_smart_string.h#' php_oauth.h
+      fi
       build_oauth
     )
   fi

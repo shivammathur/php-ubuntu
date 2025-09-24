@@ -7,7 +7,7 @@ on:
     inputs:
       php-versions:
         description: 'PHP version to build'
-        default: '8.5'
+        default: '8.5 8.6'
         required: false
       builds:
         description: 'Build type'
@@ -23,7 +23,7 @@ on:
         required: false
 
 env:
-  PHP_VERSIONS: '8.5'
+  PHP_VERSIONS: '8.5 8.6'
   BUILDS: 'debug release'
   TS: 'nts zts'
   CONTAINERS: 'ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
