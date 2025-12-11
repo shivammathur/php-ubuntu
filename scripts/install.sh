@@ -5,13 +5,13 @@ get() {
   shift
   links=("$@")
   for link in "${links[@]}"; do
-    status_code=$(sudo curl -w "%{http_code}" -o "$file_path" -sL "$link")
+    status_code=$(sudo curl -w "%{http_code}" -o "$file_path" -L "$link")
     [ "$status_code" = "200" ] && break
   done
 }
 
 install() {
-  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
+  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
   sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
   sudo rm -rf /var/lib/apt/lists/*ondrej*
   sudo tar -I zstd -xf /tmp/"$tar_file" -C /
