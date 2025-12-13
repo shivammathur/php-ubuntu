@@ -7,7 +7,7 @@ on:
     inputs:
       php-versions:
         description: 'PHP version to build'
-        default: '8.5 8.6'
+        default: '8.6'
         required: false
       builds:
         description: 'Build type'
