@@ -183,6 +183,14 @@ jobs:
       - name: Release
         run: bash scripts/release.sh
         env:
+          SETUP_PHP_AWS_S3_ENDPOINT: ${{ secrets.SETUP_PHP_AWS_S3_ENDPOINT }}
+          SETUP_PHP_AWS_ACCESS_KEY_ID: ${{ secrets.SETUP_PHP_AWS_ACCESS_KEY_ID }}
+          SETUP_PHP_AWS_SECRET_ACCESS_KEY: ${{ secrets.SETUP_PHP_AWS_SECRET_ACCESS_KEY }}
+          CF_R2_AWS_S3_ENDPOINT: ${{ secrets.CF_R2_AWS_S3_ENDPOINT }}
+          CF_R2_AWS_ACCESS_KEY_ID: ${{ secrets.CF_R2_AWS_ACCESS_KEY_ID }}
+          CF_R2_AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_AWS_SECRET_ACCESS_KEY }}
+          CF_CACHE_ZONE: ${{ secrets.CF_CACHE_ZONE }}
+          CF_CACHE_KEY: ${{ secrets.CF_CACHE_KEY }}
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
           GITHUB_MESSAGE: ${{ github.event.head_commit.message }}
           GITHUB_REPOSITORY: ${{ github.repository }}

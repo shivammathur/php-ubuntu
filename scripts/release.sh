@@ -16,8 +16,44 @@ release_cds() {
   fi
 }
 
-release_create() {
+install_awscli() {
+  if ! command -v aws >/dev/null 2>&1; then
+      pip3 install --upgrade awscli >/dev/null
+  fi
+}
+
+clear_cf_cache() {
+  curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/$CF_CACHE_ZONE/purge_cache" \
+      -H "Authorization: Bearer $CF_CACHE_KEY" -H "Content-Type: application/json" \
+      --data '{"tags":["php-ubuntu"]}'
+}
+
+upload_to_setup_php_s3() {
+  export AWS_ACCESS_KEY_ID="$SETUP_PHP_AWS_ACCESS_KEY_ID"
+  export AWS_SECRET_ACCESS_KEY="$SETUP_PHP_AWS_SECRET_ACCESS_KEY"
+  for asset in "$@"; do      
+    aws --endpoint-url "$SETUP_PHP_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
+  done
+  clear_cf_cache
+}
+
+upload_to_cloudflare_r2_s3() {
+  export AWS_ACCESS_KEY_ID="$CF_R2_AWS_ACCESS_KEY_ID"
+  export AWS_SECRET_ACCESS_KEY="$CF_R2_AWS_SECRET_ACCESS_KEY"
+  for asset in "$@"; do
+    aws --endpoint-url "$CF_R2_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
+  done
+}
+
+release_distribute() {
+  install_awscli
   release_cds
+  upload_to_setup_php_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
+  upload_to_cloudflare_r2_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
+}
+
+release_create() {
+  release_distribute
   gh release create "builds" ./scripts/install.sh "${assets[@]}" -n "builds $version" -t "builds"
 }
 
@@ -27,7 +63,7 @@ release_upload() {
   for asset in "${assets[@]}" ./scripts/install.sh; do
     gh release upload "builds" "$asset" --clobber
   done  
-  release_cds
+  release_distribute
 }
 
 log() {
