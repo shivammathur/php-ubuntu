@@ -39,14 +39,12 @@ add_swoole() {
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole-4.8.13 && configure_extension swoole
   elif [[ "$PHP_VERSION" = "8.0" ]]; then
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole-5.1.6 && configure_extension swoole
-  elif [[ "$PHP_VERSION" =~ 8.[1-4] ]]; then
+  elif [[ "$PHP_VERSION" =~ 8.[1-5] ]]; then
     yes '' 2>/dev/null | sudo pecl install -f -D 'enable-openssl="yes" enable-sockets="yes" enable-swoole-curl="yes"' swoole && configure_extension swoole
-  elif [[ "$PHP_VERSION" =~ 8.[5-6] ]]; then
+  elif [[ "$PHP_VERSION" =~ 8.6 ]]; then
     git clone https://github.com/swoole/swoole-src
     (
       cd swoole-src
-      curl -o swoole.patch -sL https://patch-diff.githubusercontent.com/raw/swoole/swoole-src/pull/5823.patch
-      git apply swoole.patch
       phpize
       ./configure --enable-openssl=yes --enable-sockets=yes --enable-swoole-curl="yes"
       make -j$(nproc)
