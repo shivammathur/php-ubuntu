@@ -69,7 +69,7 @@ jobs:
 
       - name: Get ZSTD_DIR
         id: zstd
-        run: echo "ZSTD_DIR=zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)" | tee -a "$GITHUB_OUTPUT"
+        run: echo "ZSTD_DIR=zstd-$(curl -fsSL https://api.github.com/repos/facebook/zstd/releases/latest | jq -r '.tag_name | ltrimstr("v")')" | tee -a "$GITHUB_OUTPUT"
 
       - name: Add ZSTD
         env:
@@ -151,6 +151,11 @@ jobs:
           phpize -v | grep -q "$(php-config --phpapi)" || exit 1
           php-fpm -v | grep -q '${{ matrix.php-versions }}' || exit 1
           php-cgi -v | grep -q '${{ matrix.php-versions }}' || exit 1          
+
+      - name: Test optional extensions
+        run: bash scripts/test-optional-extensions.sh
+        env:
+          PHP_VERSION: ${{ matrix.php-versions }}
 
       - name: Test broken packages
         run: sudo apt-get check      

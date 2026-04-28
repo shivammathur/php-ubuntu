@@ -3,7 +3,7 @@
 . ./scripts/packages.sh
 add_ppa
 
-add_packages apache2 apt-fast automake file gcc g++ git jq make pkg-config shtool libtool sudo systemd unzip
+add_packages apache2 apt-fast automake file gcc g++ git jq make pkg-config python3-apt shtool libtool sudo systemd unzip
 purge_packages libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
 add_packages php"${PHP_VERSION:?}"-common php"${PHP_VERSION:?}"-imagick
 purge_packages php"${PHP_VERSION:?}"-imagick php"${PHP_VERSION:?}"-common php-common

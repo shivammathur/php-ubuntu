@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import apt_pkg
-import os
 
 def parse(file):
   tag_obj = apt_pkg.TagFile(open(file, "r"))

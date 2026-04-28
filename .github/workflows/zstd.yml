@@ -21,7 +21,7 @@ jobs:
         id: zstd
         shell: bash
         run: |
-          echo "ZSTD_DIR=zstd-$(curl -sL https://github.com/facebook/zstd/releases/latest | grep -Po "tree/v(\d+\.\d+\.\d+)" | cut -d'v' -f 2 | head -n 1)" | tee -a "$GITHUB_OUTPUT"
+          echo "ZSTD_DIR=zstd-$(curl -fsSL https://api.github.com/repos/facebook/zstd/releases/latest | jq -r '.tag_name | ltrimstr("v")')" | tee -a "$GITHUB_OUTPUT"
           echo "CONTAINER_NAME=${CONTAINER//[\/:]/-}" | tee -a "$GITHUB_OUTPUT"
       - name: Add ZSTD
         env:
@@ -39,5 +39,5 @@ jobs:
         run: |
           apt-get install git gh -y
           cd /opt/zstd
-          tar -czvf $ARTIFACT.tar.gz *
-          gh release upload "builds" -R ${{ github.repository }} $ARTIFACT.tar.gz --clobber
+          tar -czvf "$ARTIFACT.tar.gz" ./*
+          gh release upload "builds" -R "${{ github.repository }}" "$ARTIFACT.tar.gz" --clobber

@@ -3,11 +3,17 @@
 . ./scripts/packages.sh
 add_ppa
 
-add_packages apache2 apt-fast automake file gcc g++ git jq make pkg-config shtool libtool sudo systemd unzip
-add_packages autoconf firebird-dev freetds-dev libacl1-dev libapparmor-dev libargon2-dev libaspell-dev libc-client2007e-dev libcurl4-openssl-dev libdb-dev libedit-dev libelf1t64 libgomp1 libicu-dev libkrb5-dev libldap-dev liblmdb-dev liblz4-dev libmemcached-dev libonig-dev libpq-dev libqdbm-dev librabbitmq-dev libsodium-dev libsnmp-dev libsqlite3-dev libtidy-dev libtool libwrap0-dev libxml2-dev libxslt1-dev libyaml-dev libzip-dev libzmq3-dev make php-common snmp shtool systemd tzdata
+samba_python_lib="$(apt-cache depends samba-libs | awk '/Depends: libpython/ {print $2; exit}')"
+add_packages apache2 apt-fast automake file gcc g++ git jq make pkg-config python3-apt shtool libtool sudo systemd unzip
+add_packages autoconf firebird-dev freetds-dev libacl1-dev libapparmor-dev libargon2-dev libaspell-dev libbrotli-dev libc-ares-dev libc-client2007e-dev libcurl4-openssl-dev libdb-dev libedit-dev libelf1t64 libgomp1 libgpgme-dev libicu-dev libkrb5-dev libldap-dev liblmdb-dev liblz4-dev libmaxminddb-dev libmemcached-dev libnghttp2-dev libonig-dev libpq-dev libqdbm-dev librabbitmq-dev libsodium-dev libsnmp-dev libsqlite3-dev libssh2-1-dev libssl-dev libtidy-dev libtool libwrap0-dev libxml2-dev libxslt1-dev libyaml-dev libzip-dev libzmq3-dev make patch php-common snmp shtool systemd tzdata uuid-dev
 purge_packages libfile-fcntllock-perl libalgorithm-merge-perl libalgorithm-diff-xs-perl unattended-upgrades libalgorithm-diff-perl manpages-dev
 purge_packages libgd-dev libfreetype-dev libfreetype6 libfribidi-dev libharfbuzz-dev liblzma-dev libtiff-dev libgd3 libavif13 libavif16 libimagequant0 libraqm0 libyuv0 libaom3 libdav1d5 libgav1-0 libabsl20210324 libdav1d7 libgav1-1 librav1e0 libsvtav1enc1d1 libabsl20220623t64 || true
 arch="$(arch)"
+if [ -n "$samba_python_lib" ]; then
+  add_packages libcairo2 "$samba_python_lib"
+else
+  add_packages libcairo2
+fi
 if [[ "$VERSION_ID" != '24.04' && "$arch" != "aarch64" && "$arch" != "arm64" ]]; then
   add_packages unixodbc
 fi
