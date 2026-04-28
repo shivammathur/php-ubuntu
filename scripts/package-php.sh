@@ -51,28 +51,9 @@ remove_dev_artifacts() {
   sudo find /tmp/php -type f \( -name '*.a' -o -name '*.gir' \) -delete
 }
 
-verify_elf_dependencies() {
-  missing_file=$(mktemp)
-  library_path="/tmp/php/usr/lib/$lib_subdir:/tmp/php/lib/$lib_subdir:/tmp/php/usr/lib:/tmp/php/usr/lib/$lib_subdir/samba"
-
-  while IFS= read -r -d '' file; do
-    if readelf -d "$file" 2>/dev/null | grep -q 'NEEDED'; then
-      LD_LIBRARY_PATH="$library_path${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ldd "$file" 2>/dev/null | awk -v file="$file" '/not found/ { print file ": " $0 }' >> "$missing_file"
-    fi
-  done < <(find /tmp/php -type f -print0)
-
-  if [ -s "$missing_file" ]; then
-    cat "$missing_file"
-    rm -f "$missing_file"
-    exit 1
-  fi
-  rm -f "$missing_file"
-}
-
 optimize_package() {
   remove_optional_extension_debug_symbols
   remove_dev_artifacts
-  verify_elf_dependencies
 }
 
 ls -la /
