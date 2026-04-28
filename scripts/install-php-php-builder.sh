@@ -10,3 +10,28 @@ bash /tmp/install.sh github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}"
 if [ "$VERSION_ID" = '24.04' ]; then
   purge_packages libbz2-dev libcairo2-dev libdav1d-dev libfontconfig-dev libfreetype-dev libgd-dev libgdk-pixbuf-2.0-dev libheif-dev libmagickcore-dev libmagickcore-6.q16-dev libpng-dev libwmf-dev libxpm-dev
 fi
+dev_only_packages=(
+  libaom-dev
+  libblkid-dev
+  libdjvulibre-dev
+  libevent-dev
+  libgearman-dev
+  libglib2.0-dev
+  libimath-dev
+  liblerc-dev
+  libmcrypt-dev
+  libmount-dev
+  libmpdec-dev
+  libopenexr-dev
+  librdkafka-dev
+  librrd-dev
+  libselinux1-dev
+  libsepol-dev
+  libsmbclient-dev
+  libvpx-dev
+  libwebp-dev
+  libx11-dev
+  libx265-dev
+  unixodbc-dev
+)
+purge_packages "${dev_only_packages[@]}"
