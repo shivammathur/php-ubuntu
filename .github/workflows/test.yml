@@ -1,0 +1,94 @@
+name: Test PHP packages
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        php: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5', '8.6']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch installer
+        run: sed -i -e '/^[[:space:]]*fix_packages[[:space:]]*$/d' scripts/install.sh
+
+      - name: Setup PHP
+        id: setup
+        continue-on-error: true
+        run: bash scripts/install.sh ${{ matrix.php }}
+
+      - name: Test PHP
+        id: php
+        if: steps.setup.outcome == 'success'
+        continue-on-error: true
+        run: |
+          file /usr/bin/php${{ matrix.php }}
+          php -v
+          php-config --version
+          php-fpm -v
+          php-cgi -v
+          phpize -v
+          php -m
+          sudo service php${{ matrix.php }}-fpm status || exit 1
+          php -v | grep -q '${{ matrix.php }}'
+          php-config --version | grep -q '${{ matrix.php }}'
+          phpize -v | grep -q "$(php-config --phpapi)"
+          php-fpm -v | grep -q '${{ matrix.php }}'
+          php-cgi -v | grep -q '${{ matrix.php }}'
+
+      - name: Check broken packages
+        id: packages
+        if: always()
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          OS: ${{ matrix.os }}
+          SETUP_OUTCOME: ${{ steps.setup.outcome }}
+          PHP_TEST_OUTCOME: ${{ steps.php.outcome }}
+        run: bash scripts/check-test-packages.sh "$PHP_VERSION" "$OS" "$SETUP_OUTCOME" "$PHP_TEST_OUTCOME"
+
+      - name: Upload package check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-check-${{ matrix.php }}-${{ matrix.os }}
+          path: reports/*
+          if-no-files-found: error
+
+      - name: Fail on test errors
+        if: steps.setup.outcome == 'failure' || steps.php.outcome == 'failure' || steps.packages.outputs.broken == 'true'
+        run: exit 1
+
+  dispatch-cache:
+    name: Dispatch cache rebuilds
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download package check reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: package-check-*
+          path: reports
+          merge-multiple: true
+
+      - name: Dispatch cache workflows
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          REF: ${{ github.ref_name }}
+        run: bash scripts/dispatch-cache-workflows.sh
