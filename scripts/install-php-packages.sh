@@ -6,7 +6,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -f
 
 echo "Installing PHP $PHP_VERSION"
 
-DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends libpcre2-dev libpcre3-dev libpng-dev
+DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends libpcre2-dev libpcre3-dev
 
 DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends \
   php$PHP_VERSION \
