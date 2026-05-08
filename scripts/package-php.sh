@@ -51,7 +51,25 @@ remove_dev_artifacts() {
   sudo find /tmp/php -type f \( -name '*.a' -o -name '*.gir' \) -delete
 }
 
+remove_excluded_package_files() {
+  excluded_file="${GITHUB_WORKSPACE:-}"/scripts/excluded
+
+  [ -f "$excluded_file" ] || return 0
+
+  while IFS= read -r package; do
+    [ -n "$package" ] || continue
+    dpkg-query -L "$package" 2>/dev/null | while IFS= read -r file; do
+      cached_file="/tmp/php$file"
+      if [ -f "$cached_file" ] || [ -L "$cached_file" ]; then
+        sudo rm -f "$cached_file"
+      fi
+    done
+    sudo rm -f /tmp/php/var/lib/dpkg/info/"$package".* /tmp/php/var/lib/dpkg/info/"$package":*
+  done < "$excluded_file"
+}
+
 optimize_package() {
+  remove_excluded_package_files
   remove_optional_extension_debug_symbols
   remove_dev_artifacts
 }
@@ -79,6 +97,7 @@ done
 lib_subdir="$(uname -m)-linux-gnu"
 sudo touch /var/lib/dpkg/status-diff
 sudo cp "$GITHUB_WORKSPACE"/scripts/required /tmp/required
+sudo cp "$GITHUB_WORKSPACE"/scripts/excluded /tmp/excluded
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo mkdir -p /tmp/php/usr/sbin /tmp/php/var/lib/dpkg/
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
