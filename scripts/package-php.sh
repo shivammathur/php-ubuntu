@@ -56,6 +56,14 @@ optimize_package() {
   remove_dev_artifacts
 }
 
+cache_fpm_socket_placeholder() {
+  fpm_socket=/run/php/php"${PHP_VERSION:?}"-fpm.sock
+  sudo service php"$PHP_VERSION"-fpm stop >/dev/null 2>&1 || true
+  sudo rm -f "$fpm_socket"
+  sudo touch "$fpm_socket"
+}
+
+cache_fpm_socket_placeholder
 ls -la /
 for dir_path in /bin /lib /lib64 /sbin /usr /var /run/php; do
   [ -d "$dir_path" ] && git add "$dir_path"
