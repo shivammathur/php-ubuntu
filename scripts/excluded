@@ -1,3 +1,7 @@
+libavahi-client3
+libavahi-common-data
+libavahi-common3
+libavahi-glib1
 libblkid-dev
 libblkid1
 libmount-dev
