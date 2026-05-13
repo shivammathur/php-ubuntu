@@ -56,8 +56,22 @@ remove_excluded_package_files() {
 
   [ -f "$excluded_file" ] || return 0
 
-  while IFS= read -r package; do
+  is_excluded_package() {
+    package=$1
+
+    while IFS= read -r pattern; do
+      [ -n "$pattern" ] || continue
+      # shellcheck disable=SC2053
+      [[ $package == $pattern ]] && return 0
+    done < "$excluded_file"
+
+    return 1
+  }
+
+  dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | while IFS= read -r package; do
     [ -n "$package" ] || continue
+    is_excluded_package "$package" || continue
+
     dpkg-query -L "$package" 2>/dev/null | while IFS= read -r file; do
       cached_file="/tmp/php$file"
       if [ -f "$cached_file" ] || [ -L "$cached_file" ]; then
@@ -65,7 +79,7 @@ remove_excluded_package_files() {
       fi
     done
     sudo rm -f /tmp/php/var/lib/dpkg/info/"$package".* /tmp/php/var/lib/dpkg/info/"$package":*
-  done < "$excluded_file"
+  done
 }
 
 optimize_package() {
@@ -111,6 +125,7 @@ sudo cp -a /lib/"$lib_subdir"/libpcre* /tmp/php/usr/lib/"$lib_subdir"/
 sudo cp -a /usr/share/keyrings/ondrej-php-keyring.gpg /tmp/php/usr/share/keyrings/ondrej-php-keyring.gpg
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 optimize_package
+# shellcheck disable=SC1091
 . /etc/os-release
 SEMVER="$(php -v | head -n 1 | cut -f 2 -d ' ' | cut -f 1 -d '-')"
 arch="$(arch)"

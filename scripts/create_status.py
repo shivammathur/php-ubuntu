@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import apt_pkg
+from fnmatch import fnmatchcase
 from pathlib import Path
 
 def parse(file):
@@ -16,6 +17,9 @@ def package_list(file):
     return []
 
   return [line.strip() for line in path.read_text().splitlines() if line.strip()]
+
+def package_matches(package, patterns):
+  return any(fnmatchcase(package, pattern) for pattern in patterns)
 
 def has_package_info(package, value):
   info_dir = Path('/tmp/php/var/lib/dpkg/info')
@@ -43,7 +47,7 @@ excluded = package_list('/tmp/excluded')
 
 new_listing={}
 for key, value in listing.items():
-  if key in excluded:
+  if package_matches(key, excluded):
     continue
 
   if (
