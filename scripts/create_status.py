@@ -17,6 +17,23 @@ def package_list(file):
 
   return [line.strip() for line in path.read_text().splitlines() if line.strip()]
 
+def has_package_info(package, value):
+  info_dir = Path('/tmp/php/var/lib/dpkg/info')
+  if not info_dir.is_dir():
+    return False
+
+  for line in value.splitlines():
+    if line.startswith('Architecture: '):
+      arch = line.split(': ', 1)[1]
+      break
+  else:
+    arch = ''
+
+  if (info_dir / f'{package}.list').is_file():
+    return True
+
+  return arch not in ('', 'all') and (info_dir / f'{package}:{arch}.list').is_file()
+
 status = '/var/lib/dpkg/status'
 old_status = status + '-orig'
 listing = parse(status)
@@ -29,7 +46,9 @@ for key, value in listing.items():
   if key in excluded:
     continue
 
-  if key not in old_listing or listing[key] != old_listing[key] or key in required:
+  if (
+    key not in old_listing or listing[key] != old_listing[key] or key in required
+  ) and has_package_info(key, value):
     new_listing[key] = value
 
 dff = open(status + '-diff', "w")

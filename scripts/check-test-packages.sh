@@ -19,9 +19,21 @@ mkdir -p "$report_dir"
 set +e
 sudo apt-get check 2>&1 | tee "$apt_log"
 apt_check_status=${PIPESTATUS[0]}
+missing_info="$(
+  dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | while IFS= read -r package; do
+    if [ -n "$package" ] && [ ! -e "/var/lib/dpkg/info/$package.list" ]; then
+      printf 'Missing dpkg file list: %s\n' "$package"
+    fi
+  done
+)"
+metadata_check_status=0
+if [ -n "$missing_info" ]; then
+  metadata_check_status=1
+  printf '%s\n' "$missing_info" | tee -a "$apt_log"
+fi
 set -e
 
-if [ "$apt_check_status" -eq 0 ]; then
+if [ "$apt_check_status" -eq 0 ] && [ "$metadata_check_status" -eq 0 ]; then
   apt_check_status=0
   broken=false
 else
@@ -37,6 +49,7 @@ fi
   echo "os=$os"
   echo "broken=$broken"
   echo "apt_check_status=$apt_check_status"
+  echo "metadata_check_status=$metadata_check_status"
   echo "setup_outcome=$setup_outcome"
   echo "php_test_outcome=$php_test_outcome"
   echo "apt_check_log=$(basename "$apt_log")"
@@ -46,6 +59,7 @@ if [ -n "${GITHUB_OUTPUT:-}" ]; then
   {
     echo "broken=$broken"
     echo "apt_check_status=$apt_check_status"
+    echo "metadata_check_status=$metadata_check_status"
     echo "report=$report_file"
   } >> "$GITHUB_OUTPUT"
 fi
@@ -60,6 +74,7 @@ if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
     echo "| PHP smoke test | $php_test_outcome |"
     echo "| Packages | $([ "$broken" = true ] && echo broken || echo ok) |"
     echo "| apt-get check status | $apt_check_status |"
+    echo "| dpkg metadata check status | $metadata_check_status |"
     echo
     echo "#### Package check"
     echo

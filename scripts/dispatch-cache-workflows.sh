@@ -23,8 +23,8 @@ append_summary() {
 {
   echo '### Package test results'
   echo
-  echo '| PHP | OS | Install | PHP smoke test | Packages | apt-get check |'
-  echo '| --- | --- | --- | --- | --- | --- |'
+  echo '| PHP | OS | Install | PHP smoke test | Packages | apt-get check | dpkg metadata |'
+  echo '| --- | --- | --- | --- | --- | --- | --- |'
 } | append_summary
 
 while IFS= read -r report; do
@@ -32,6 +32,7 @@ while IFS= read -r report; do
   os=
   broken=false
   apt_check_status=
+  metadata_check_status=
   setup_outcome=
   php_test_outcome=
   apt_check_log=
@@ -46,7 +47,7 @@ while IFS= read -r report; do
   fi
 
   {
-    echo "| $php_version | $os | $setup_outcome | $php_test_outcome | $package_result | $apt_check_status |"
+    echo "| $php_version | $os | $setup_outcome | $php_test_outcome | $package_result | $apt_check_status | $metadata_check_status |"
   } | append_summary
 done < <(printf '%s\n' "${reports[@]}" | sort)
 
@@ -71,6 +72,7 @@ while IFS= read -r report; do
   os=
   broken=false
   apt_check_status=
+  metadata_check_status=
   apt_check_log=
   # shellcheck disable=SC1090
   source "$report"
@@ -84,6 +86,7 @@ while IFS= read -r report; do
     echo "#### PHP $php_version on $os"
     echo
     echo "apt-get check status: $apt_check_status"
+    echo "dpkg metadata check status: $metadata_check_status"
     echo
     echo '```text'
     if [ -n "$apt_check_log" ] && [ -f "$reports_dir/$apt_check_log" ]; then
