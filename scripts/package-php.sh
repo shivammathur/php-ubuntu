@@ -76,6 +76,8 @@ remove_excluded_package_files() {
       cached_file="/tmp/php$file"
       if [ -f "$cached_file" ] || [ -L "$cached_file" ]; then
         sudo rm -f "$cached_file"
+      elif [ -d "$cached_file" ]; then
+        sudo rmdir "$cached_file" 2>/dev/null || true
       fi
     done
     sudo rm -f /tmp/php/var/lib/dpkg/info/"$package".* /tmp/php/var/lib/dpkg/info/"$package":*

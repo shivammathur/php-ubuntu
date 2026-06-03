@@ -4,6 +4,8 @@ libavahi-*
 libblkid*
 libgirepository-*
 libglib2.0-*
+liblzma-dev
+liblzma-dev:*
 libmount*
 libpng*
 libtiff*
