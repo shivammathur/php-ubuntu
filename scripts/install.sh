@@ -36,8 +36,8 @@ fix_list() {
     [ -e "/etc/apt/sources.list.d/ubuntu.sources" ] && sudo rm "$ppa_list.list" || sudo rm "$ppa_list.sources"
   fi
   if [ "$builds" = "debug" ]; then
-    list=/etc/apt/sources.list.d/"$(basename "$(grep -lr "ondrej/php" /etc/apt/sources.list.d)")"
-    sudo apt-get update -o Dir::Etc::sourcelist="$list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+    list="$(grep -lr "ondrej/php" /etc/apt/sources.list.d 2>/dev/null | head -n 1)"
+    [ -n "$list" ] && sudo apt-get update -o Dir::Etc::sourcelist="$list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
   fi
 }
 

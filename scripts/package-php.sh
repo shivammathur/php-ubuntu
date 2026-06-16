@@ -106,6 +106,8 @@ cache_fpm_socket_placeholder() {
 }
 
 cache_fpm_socket_placeholder
+source=packages
+[ -s /tmp/php-ubuntu-source ] && source="$(cat /tmp/php-ubuntu-source)"
 ls -la /
 for dir_path in /bin /lib /lib64 /sbin /usr /var /run/php; do
   [ -d "$dir_path" ] && git add "$dir_path"
@@ -120,20 +122,24 @@ for file in $(git log -p -n 1 --name-only | sed 's/^.*\(\s\).*$/\1/' | xargs -L1
 done
 lib_subdir="$(uname -m)-linux-gnu"
 sudo touch /var/lib/dpkg/status-diff
-sudo cp "$GITHUB_WORKSPACE"/scripts/required /tmp/required
+required_file="$GITHUB_WORKSPACE"/scripts/required
+[ "$source" = "php-builder" ] && required_file="$GITHUB_WORKSPACE"/scripts/required-php-builder
+sudo cp "$required_file" /tmp/required
 sudo cp "$GITHUB_WORKSPACE"/scripts/excluded /tmp/excluded
-copy_package_info libpcre3
+[ "$source" = "packages" ] && copy_package_info libpcre3
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
 sudo mkdir -p /tmp/php/usr/sbin /tmp/php/var/lib/dpkg/
 sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
 sudo cp "$GITHUB_WORKSPACE"/scripts/merge_status.py /tmp/php/usr/sbin/merge_status
 cat /tmp/php/var/lib/dpkg/status-diff
-sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
-sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
-sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
-sudo cp -a /usr/lib/"$lib_subdir"/libpcre* /tmp/php/usr/lib/"$lib_subdir"/
-sudo cp -a /lib/"$lib_subdir"/libpcre* /tmp/php/usr/lib/"$lib_subdir"/
-sudo cp -a /usr/share/keyrings/ondrej-php-keyring.gpg /tmp/php/usr/share/keyrings/ondrej-php-keyring.gpg
+if [ "$source" = "packages" ]; then
+  sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
+  sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
+  sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
+  sudo cp -a /usr/lib/"$lib_subdir"/libpcre* /tmp/php/usr/lib/"$lib_subdir"/
+  sudo cp -a /lib/"$lib_subdir"/libpcre* /tmp/php/usr/lib/"$lib_subdir"/
+  sudo cp -a /usr/share/keyrings/ondrej-php-keyring.gpg /tmp/php/usr/share/keyrings/ondrej-php-keyring.gpg
+fi
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 optimize_package
 # shellcheck disable=SC1091
