@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        container: [ubuntu:26.04 ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04 arm64v8/ubuntu:26.04]
+        container: [ubuntu:26.04, ubuntu:24.04, ubuntu:22.04, arm64v8/ubuntu:22.04, arm64v8/ubuntu:24.04, arm64v8/ubuntu:26.04]
     if: "!contains(github.event.head_commit.message, 'skip-build')"
     steps:
       - name: Checkout
