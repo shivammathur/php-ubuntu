@@ -4,6 +4,9 @@ libavahi-*
 libblkid*
 libgirepository-*
 libglib2.0-*
+libharfbuzz-dev
+libharfbuzz-dev:*
+libheif*
 liblzma-dev
 liblzma-dev:*
 libmount*
