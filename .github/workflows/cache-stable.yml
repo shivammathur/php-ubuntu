@@ -1,6 +1,5 @@
 name: Cache PHP for stable versions
 on:
-  push:
   workflow_dispatch:
     inputs:
       php-versions:
