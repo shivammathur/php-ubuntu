@@ -25,7 +25,7 @@ env:
   PHP_VERSIONS: '8.6'
   BUILDS: 'debug release'
   TS: 'nts zts'
-  CONTAINERS: 'ubuntu:26.04 ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04'
+  CONTAINERS: 'ubuntu:26.04 ubuntu:24.04 ubuntu:22.04 arm64v8/ubuntu:22.04 arm64v8/ubuntu:24.04 arm64v8/ubuntu:26.04'
   BASE_OS: ubuntu-24.04
   BASE_OS_ARM: ubuntu-24.04-arm
 
