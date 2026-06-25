@@ -7,6 +7,8 @@ libglib2.0-*
 libharfbuzz-dev
 libharfbuzz-dev:*
 libheif*
+libraqm-dev
+libraqm-dev:*
 libxml2-dev
 libxml2-dev:*
 liblzma-dev
