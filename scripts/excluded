@@ -9,6 +9,8 @@ libharfbuzz-dev:*
 libheif*
 libraqm-dev
 libraqm-dev:*
+libssh2-1-dev
+libssh2-1-dev:*
 libxml2-dev
 libxml2-dev:*
 liblzma-dev
