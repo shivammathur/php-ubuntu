@@ -2,6 +2,7 @@ bzip2
 gir1.2-*
 girepository-tools
 gobject-introspection*
+libaom-dev
 libavahi-*
 libblkid*
 libcairo2-dev
