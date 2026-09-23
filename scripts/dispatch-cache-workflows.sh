@@ -30,7 +30,7 @@ append_summary() {
 }
 
 workflow_for_php() {
-  if [ "$1" = '8.6' ]; then
+  if [[ "$1" = '8.6' || "$1" = '8.7' ]]; then
     echo 'cache-nightly.yml'
   else
     echo 'cache-stable.yml'

@@ -1,5 +1,6 @@
 bzip2
 gir1.2-*
+girepository-tools
 gobject-introspection*
 libavahi-*
 libblkid*
@@ -9,14 +10,14 @@ libcurl4-openssl-dev
 libcurl4-openssl-dev:*
 libdjvulibre-dev
 libdjvulibre-dev:*
+libexpat1-dev
 libfontconfig-dev
 libfontconfig-dev:*
 libfreetype-dev
 libfreetype-dev:*
 libgdk-pixbuf-2.0-dev
 libgdk-pixbuf-2.0-dev:*
-libgio-2.0-dev
-libgio-2.0-dev:*
+libgio-2.0-dev*
 libgirepository-*
 libgirepository1.0-dev
 libgirepository1.0-dev:*
