@@ -25,7 +25,8 @@ libgirepository1.0-dev:*
 libglib2.0-*
 libharfbuzz-dev
 libharfbuzz-dev:*
-libheif*
+libheif-dev
+libheif-dev:*
 libmagickcore-*.q16-dev
 libmagickcore-*.q16-dev:*
 libraqm-dev

@@ -11,7 +11,7 @@ bash /tmp/install.sh github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}"
 . ./scripts/packages.sh
 if [ "$VERSION_ID" = '24.04' ] || [ "$VERSION_ID" = '26.04' ]; then
   purge_packages libbz2-dev libcairo2-dev libdav1d-dev libfontconfig-dev libfreetype-dev libgdk-pixbuf-2.0-dev libheif-dev libmagickcore-dev libmagickcore-6.q16-dev libwmf-dev libxpm-dev libxt-dev
-  add_packages libheif-plugin-libde265
+  bash ./scripts/install-imagick-dependencies.sh || exit 1
 fi
 dev_only_packages=(
   libaom-dev

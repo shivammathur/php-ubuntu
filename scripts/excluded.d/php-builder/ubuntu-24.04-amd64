@@ -1,5 +1,4 @@
 libacl1
-libaom3
 libapparmor1
 libargon2-1
 libaspell15
@@ -42,7 +41,6 @@ libgraphite2-3
 libgssapi-krb5-2
 libharfbuzz0b
 libhashkit2t64
-libheif1
 libhogweed6t64
 libicu74
 libidn2-0

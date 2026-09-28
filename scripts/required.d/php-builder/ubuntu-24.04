@@ -1,11 +1,17 @@
 libabsl20220623t64
+libaom3
 libavif16
 libdav1d7
 libdbi1t64
+libde265-0
 libdjvulibre21
 libevent-2.1-7t64
 libgav1-1
 libgearman8t64
+libheif-plugin-aomdec
+libheif-plugin-aomenc
+libheif-plugin-libde265
+libheif1
 libimagequant0
 libimath-3-1-29t64
 libldb2
