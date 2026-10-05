@@ -1,5 +1,11 @@
+libgraphite2-dev
+libgraphite2-dev:*
+liblcms2-dev
+liblcms2-dev:*
 libmagickcore-dev
 libmagickcore-dev:*
+libopenjp2-7-dev
+libopenjp2-7-dev:*
 libwmf-dev
 libwmf-dev:*
 libxt-dev

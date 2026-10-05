@@ -10,6 +10,8 @@ libmcrypt4
 librdkafka1
 librrd8
 libsmbclient
+libtalloc2
+libtevent0
 libwbclient0
 libxmlrpc-epi0
 libyuv0

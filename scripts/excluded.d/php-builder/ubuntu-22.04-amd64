@@ -103,10 +103,8 @@ libssl3
 libstdc++6
 libsybdb5
 libsystemd0
-libtalloc2
 libtasn1-6
 libtdb1
-libtevent0
 libthai0
 libtidy5deb1
 libtiff5

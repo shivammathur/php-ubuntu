@@ -98,7 +98,6 @@ libssl3t64
 libstdc++6
 libsybdb5
 libsystemd0
-libtalloc2
 libtasn1-6
 libtdb1
 libthai0
@@ -108,7 +107,6 @@ libtinfo6
 libtommath1
 libunistring5
 libuuid1
-libwbclient0
 libwebp7
 libwebpdemux2
 libwebpmux3
