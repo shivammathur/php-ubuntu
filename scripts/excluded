@@ -16,6 +16,8 @@ libfontconfig-dev
 libfontconfig-dev:*
 libfreetype-dev
 libfreetype-dev:*
+libfreetype6-dev
+libfreetype6-dev:*
 libgdk-pixbuf-2.0-dev
 libgdk-pixbuf-2.0-dev:*
 libgio-2.0-dev*
