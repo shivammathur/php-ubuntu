@@ -2,8 +2,13 @@
 
 cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
 DEBIAN_FRONTEND=noninteractive apt-get install -y libblkid-dev libcurl4-openssl-dev libmount-dev libselinux1-dev
-curl -o /tmp/install.sh -sL "https://github.com/shivammathur/php-builder/releases/download/$PHP_VERSION/install.sh"
-bash /tmp/install.sh github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}"
+if [ -n "${PHP_BUILDER_ARCHIVE_DIR:-}" ]; then
+  [ -f "$PHP_BUILDER_ARCHIVE_DIR/install.sh" ] || exit 1
+  bash "$PHP_BUILDER_ARCHIVE_DIR/install.sh" github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}" || exit 1
+else
+  curl -o /tmp/install.sh -sL "https://github.com/shivammathur/php-builder/releases/download/$PHP_VERSION/install.sh"
+  bash /tmp/install.sh github "$PHP_VERSION" "${BUILDS:?}" "${TS:?}" || exit 1
+fi
 
 # shellcheck source=/dev/null
 . /etc/os-release

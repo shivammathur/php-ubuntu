@@ -76,6 +76,7 @@ assets=()
 cds_assets=()
 rm -rf ./builds/zstd*
 add_assets
+python3 scripts/private/publish_guard.py ubuntu builds || exit 1
 cd "$GITHUB_WORKSPACE" || exit 1
 if ! gh release view builds; then
   release_create

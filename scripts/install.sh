@@ -11,7 +11,14 @@ get() {
 }
 
 install() {
-  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
+  if [ -n "${PHP_UBUNTU_ARCHIVE_DIR:-}" ]; then
+    # Downloaded and checksum-verified by the private staging coordinator.
+    [ -f "$PHP_UBUNTU_ARCHIVE_DIR/$tar_file" ] || return 1
+    sudo cp "$PHP_UBUNTU_ARCHIVE_DIR/$tar_file" /tmp/"$tar_file" || return 1
+  else
+    : # Keep the branch valid when local CI removes the following fetch.
+    get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
+  fi
   sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
   sudo rm -rf /var/lib/apt/lists/*ondrej*
   sudo tar -I zstd -xf /tmp/"$tar_file" -C /
@@ -25,6 +32,7 @@ fix_service() {
 }
 
 fix_packages() {
+  [ "${PHP_UBUNTU_SKIP_PACKAGE_REPAIR:-false}" = true ] && return 0
   if ! sudo apt-get check 2>/dev/null; then
     sudo apt --fix-broken install -y || (sudo apt-get update && sudo apt --fix-broken install -y)
   fi
@@ -68,7 +76,7 @@ ts=${3:-nts}
 arch="$(arch)"
 [[ "$arch" = "aarch64" || "$arch" = "arm64" ]] && ARCH_SUFFIX='_arm64' || ARCH_SUFFIX=''
 tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$ARCH_SUFFIX".tar.zst
-install
+install || exit 1
 fix_alternatives
 fix_service
 fix_list
