@@ -11,7 +11,7 @@ get() {
 }
 
 install() {
-  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/latest/download/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
+  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/download/builds/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
   sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
   sudo rm -rf /var/lib/apt/lists/*ondrej*
   sudo tar -I zstd -xf /tmp/"$tar_file" -C /
@@ -25,7 +25,10 @@ fix_service() {
 }
 
 fix_packages() {
-  if ! sudo apt-get check 2>/dev/null; then
+  # Check installed dependencies without rebuilding the repository package caches.
+  # Repairs still use the runner's sources and caches below.
+  if ! sudo apt-get check -o Dir::Etc::sourcelist=/dev/null -o Dir::Etc::sourceparts=- \
+    -o Dir::Cache::pkgcache= -o Dir::Cache::srcpkgcache= 2>/dev/null; then
     sudo apt --fix-broken install -y || (sudo apt-get update && sudo apt --fix-broken install -y)
   fi
 }
