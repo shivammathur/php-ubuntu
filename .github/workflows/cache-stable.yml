@@ -123,9 +123,11 @@ jobs:
           path: /tmp
 
       - name: Patch script
-        run: sed -i -e '/releases/d' -e '/^\s*fix_packages\s*$/d' -e '1s/$/\n\nset -x/' scripts/install.sh
+        run: sed -i -e '/^\s*fix_packages\s*$/d' -e '1s/$/\n\nset -x/' scripts/install.sh
 
       - name: Setup PHP
+        env:
+          PHP_UBUNTU_ARCHIVE_DIR: /tmp
         run: bash scripts/install.sh ${{ matrix.php }} ${{ matrix.builds }} ${{ matrix.ts }}
 
       - name: Switch versions

@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
 
-get() {
-  file_path=$1
+download_and_extract() (
+  set -o pipefail
+  local file_path=$1 link
   shift
-  links=("$@")
-  for link in "${links[@]}"; do
-    status_code=$(sudo curl -w "%{http_code}" -o "$file_path" -L "$link")
-    [ "$status_code" = "200" ] && break
+  for link in "$@"; do
+    # Keep the archive while extracting incoming data, and retry the whole
+    # pipeline if either the transfer or extraction fails.
+    if sudo curl -fL "$link" | sudo tee "$file_path" | sudo tar -I zstd -xf - -C /; then
+      return 0
+    fi
   done
-}
+  return 1
+)
 
 install() {
-  get /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/download/builds/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file"
-  sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig
-  sudo rm -rf /var/lib/apt/lists/*ondrej*
-  sudo tar -I zstd -xf /tmp/"$tar_file" -C /
-  sudo LC_ALL=C.UTF-8 python3 /usr/sbin/merge_status && sudo rm -f /usr/sbin/merge_status
+  sudo cp /var/lib/dpkg/status /var/lib/dpkg/status-orig || return 1
+  sudo rm -rf /var/lib/apt/lists/*ondrej* || return 1
+  if [ -n "${PHP_UBUNTU_ARCHIVE_DIR:-}" ]; then
+    sudo tar -I zstd -xf "$PHP_UBUNTU_ARCHIVE_DIR/$tar_file" -C / || return 1
+  else
+    download_and_extract /tmp/"$tar_file" "https://github.com/shivammathur/php-ubuntu/releases/download/builds/$tar_file" "https://artifacts.php-ubuntu.setup-php.com/$tar_file" "https://artifacts.setup-php.com/php-ubuntu/$tar_file" "https://dl.cloudsmith.io/public/shivammathur/php-ubuntu/raw/files/$tar_file" || return 1
+  fi
+  sudo LC_ALL=C.UTF-8 python3 /usr/sbin/merge_status && sudo rm -f /usr/sbin/merge_status || return 1
   sudo mv /var/lib/dpkg/status-orig /var/lib/dpkg/status
 }
 
@@ -71,7 +78,7 @@ ts=${3:-nts}
 arch="$(arch)"
 [[ "$arch" = "aarch64" || "$arch" = "arm64" ]] && ARCH_SUFFIX='_arm64' || ARCH_SUFFIX=''
 tar_file=php_"$version-$ts$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$ARCH_SUFFIX".tar.zst
-install
+install || exit 1
 fix_alternatives
 fix_service
 fix_list
