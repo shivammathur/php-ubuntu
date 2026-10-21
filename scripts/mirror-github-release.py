@@ -134,17 +134,25 @@ def prepare(version, directory, source_version, plan_only=False):
     print(f"{REPO} {version}: {len(chosen)} assets; " + ("metadata checked" if plan_only else "download hashes verified"))
 
 
-def verify_public(file, base):
+def public_matches(file, base, attempts=1):
     target = file.parent / "verify-download"
-    for attempt in range(12):
+    for attempt in range(attempts):
         url = base + "/" + quote(file.name) + "?verify=" + os.environ.get("GITHUB_RUN_ID", "local") + f"-{attempt}-{time.time_ns()}"
         result = subprocess.run(["curl", "--fail", "--silent", "--show-error", "--location",
-                                 "--connect-timeout", "15", "--max-time", "300", url, "-o", str(target)])
+                                 "--connect-timeout", "15", "--max-time", "300",
+                                 "-H", "Cache-Control: no-cache", url, "-o", str(target)])
         if result.returncode == 0 and target.stat().st_size == file.stat().st_size and sha256(target) == sha256(file):
             target.unlink()
-            return
-        if attempt < 11:
+            return True
+        if attempt < attempts - 1:
             time.sleep(10)
+    target.unlink(missing_ok=True)
+    return False
+
+
+def verify_public(file, base):
+    if public_matches(file, base, attempts=12):
+        return
     raise ValueError(f"Public mirror checksum mismatch: {file.name}")
 
 
@@ -171,12 +179,31 @@ def publish(directory):
             alias = directory / "php-ubuntu.sh"
             alias.write_bytes(files[0].read_bytes())
             cloud_files = [alias]
+        cloud_base = "https://dl.cloudsmith.io/public/" + REPO + "/raw/files"
+        receipt["destinations"] = {}
+
+        def verified_destination(name, base, destination_files):
+            for file in destination_files:
+                verify_public(file, base)
+            receipt["destinations"][name] = {
+                "public_base": base, "sha256_verified_assets": len(destination_files),
+            }
+            (directory / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+            print(f"{name}: all {len(destination_files)} public asset hashes verified", flush=True)
+
         for file in cloud_files:
+            if public_matches(file, cloud_base):
+                print(f"Cloudsmith already matches: {file.name}", flush=True)
+                continue
             run("cloudsmith", "push", "raw", REPO, str(file), "--republish",
                 "--summary", file.name, "--description", file.name)
-        # Upload this version to all destinations before verifying public downloads.
+        verified_destination("Cloudsmith", cloud_base, cloud_files)
         if REPO.endswith("/php-ubuntu"):
-            for prefix in ("CF_R2_AWS_", "SETUP_PHP_AWS_"):
+            destinations = [
+                ("CF_R2_AWS_", "R2", "https://artifacts.php-ubuntu.setup-php.com"),
+                ("SETUP_PHP_AWS_", "setup-php S3", "https://artifacts.setup-php.com/php-ubuntu"),
+            ]
+            for prefix, label, public_base in destinations:
                 env = {**os.environ, "AWS_ACCESS_KEY_ID": os.environ[prefix + "ACCESS_KEY_ID"],
                        "AWS_SECRET_ACCESS_KEY": os.environ[prefix + "SECRET_ACCESS_KEY"],
                        "AWS_DEFAULT_REGION": "auto" if prefix == "CF_R2_AWS_" else "us-east-1",
@@ -185,19 +212,16 @@ def publish(directory):
                        "AWS_RESPONSE_CHECKSUM_VALIDATION": "when_required"}
                 endpoint = os.environ[prefix + "S3_ENDPOINT"]
                 for file in files:
+                    if public_matches(file, public_base):
+                        print(f"{label} already matches: {file.name}", flush=True)
+                        continue
+                    print(f"Uploading to {label}: {file.name}", flush=True)
                     run("aws", "--endpoint-url", endpoint, "s3", "cp", str(file),
                         "s3://php-ubuntu/" + file.name, "--only-show-errors",
                         "--cache-control", "no-cache, max-age=0, must-revalidate", env=env)
-                # Read authenticated origin bytes; CDN caches cannot hide upload failure.
-                for file in files:
-                    target = directory / "verify-download"
-                    run("aws", "--endpoint-url", endpoint, "s3", "cp", "s3://php-ubuntu/" + file.name,
-                        str(target), "--only-show-errors", env=env)
-                    if sha256(target) != sha256(file):
-                        raise ValueError("S3 origin checksum mismatch")
-                    target.unlink()
-        for file in cloud_files:
-            verify_public(file, "https://dl.cloudsmith.io/public/" + REPO + "/raw/files")
+                # Upload credentials need not grant HeadObject/GetObject. Verify
+                # exact GitHub bytes via the public URLs used by install.sh.
+                verified_destination(label, public_base, files)
     receipt["mirror_verified"] = True
     (directory / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(f"Mirrored and verified {REPO} {receipt['version']}")

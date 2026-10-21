@@ -33,5 +33,9 @@ and unrelated assets are excluded, matching the normal distribution script.
 The shared job downloads GitHub's `install.sh` once after successful version
 jobs, preserves its bytes, and uses the existing `php-ubuntu.sh` filename for
 Cloudsmith. It then purges only the existing `php-ubuntu` Cloudflare cache tag.
-S3/R2 bytes are verified through authenticated origin downloads; Cloudsmith
-bytes are verified through its public download URL with bounded retries.
+All three destinations are verified through the public download URLs used by
+`scripts/install.sh`, with unique cache-busting queries, full size/SHA256 checks
+and bounded retries. This works with upload credentials that do not grant
+authenticated reads. Existing matching bytes are reused when recovering partial
+uploads; mismatched or unavailable assets are uploaded and then verified. Receipts
+record each verified destination separately, so partial progress stays visible.
