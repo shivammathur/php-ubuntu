@@ -3,9 +3,20 @@ from pathlib import Path
 minor=sys.argv[1];plan=json.loads(Path('publication/'+minor+'.json').read_text());repo=os.environ['GITHUB_REPOSITORY'];assert repo==plan['repository']
 caps=json.loads(zlib.decompress(base64.b64decode(os.environ.pop('PRIVATE_PACKAGE_ACCESS'))))
 def api(path):return json.loads(subprocess.check_output(['gh','api',path]))
-def inventory():
- pages=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/{plan["release_id"]}/assets?per_page=100','--paginate','--slurp']))
- out=[a for p in pages for a in p];assert len(out)==len({a['name'] for a in out});return {a['name']:a for a in out}
+def inventory(require_complete=False):
+ # Other version jobs mutate the same release. Offset pages may repeat IDs or
+ # temporarily omit entries; require two matching snapshots of this job's names.
+ names={f['name'] for f in plan['files']};previous=None
+ for attempt in range(12):
+  pages=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/{plan["release_id"]}/assets?per_page=100','--paginate','--slurp']))
+  by_id={a['id']:a for page in pages for a in page}
+  out=[a for a in by_id.values() if a['name'] in names]
+  assert len(out)==len({a['name'] for a in out}),'Distinct assets share a name'
+  current={a['name']:a for a in out}
+  fingerprint={n:(a['id'],a['state'],a['size'],a.get('digest')) for n,a in current.items()}
+  if fingerprint==previous and (not require_complete or set(current)==names):return current
+  previous=fingerprint;time.sleep(1)
+ raise RuntimeError('Could not obtain a stable version-specific release inventory')
 before=inventory();Path('work').mkdir();Path('receipts').mkdir()
 def file_sha(p):
  h=hashlib.sha256()
@@ -48,7 +59,7 @@ def publish(f):
 with cf.ThreadPoolExecutor(max_workers=6) as pool:results=list(pool.map(publish,[f for f in plan['files'] if not f.get('metadata')]))
 for f in plan['files']:
  if f.get('metadata'):results.append(publish(f))
-after=inventory()
+after=inventory(require_complete=True)
 for f in plan['files']:
  a=after[f['name']];assert a['size']==f['bytes'] and a['digest']=='sha256:'+f['sha256'],f['name']
 summary={'repository':repo,'minor':minor,'run_id':os.environ['GITHUB_RUN_ID'],'revision':os.environ['GITHUB_SHA'],'uploaded':True,'files':len(results),'github_digests_verified':True,'download_verification':'separate read-only workflow','no_rebuild':True}
