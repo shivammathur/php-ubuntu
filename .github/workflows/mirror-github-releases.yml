@@ -1,0 +1,123 @@
+name: Mirror GitHub release builds
+run-name: Mirror published PHP ${{ inputs.php-versions }} builds
+on:
+  workflow_dispatch:
+    inputs:
+      php-versions:
+        description: 'Minor versions separated by spaces, or all (stable releases only)'
+        required: true
+        type: string
+        default: all
+permissions:
+  contents: read
+jobs:
+  versions:
+    if: github.repository == 'shivammathur/php-ubuntu'
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.select.outputs.versions }}
+      shared_version: ${{ steps.select.outputs.shared_version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: select
+        env:
+          PHP_VERSIONS: ${{ inputs.php-versions }}
+        run: python3 scripts/mirror-github-release.py matrix
+  mirror:
+    name: Mirror PHP ${{ matrix.php }}
+    needs: versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJSON(needs.versions.outputs.versions) }}
+    concurrency:
+      group: php-ubuntu-release-mirror-${{ matrix.php }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install transfer clients
+        run: |
+          python3 -m venv "$RUNNER_TEMP/mirror-tools"
+          "$RUNNER_TEMP/mirror-tools/bin/pip" install cloudsmith-cli awscli
+          echo "$RUNNER_TEMP/mirror-tools/bin" >> "$GITHUB_PATH"
+      - name: Download and verify published release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PHP_VERSION: ${{ matrix.php }}
+          SOURCE_VERSION: ${{ matrix.php }}
+        run: python3 scripts/mirror-github-release.py download "$PHP_VERSION" "$RUNNER_TEMP/mirror" "$SOURCE_VERSION"
+      - name: Upload and verify existing mirrors
+        env:
+          CF_R2_AWS_ACCESS_KEY_ID: ${{ secrets.CF_R2_AWS_ACCESS_KEY_ID }}
+          CF_R2_AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_AWS_SECRET_ACCESS_KEY }}
+          CF_R2_AWS_S3_ENDPOINT: ${{ secrets.CF_R2_AWS_S3_ENDPOINT }}
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+          SETUP_PHP_AWS_ACCESS_KEY_ID: ${{ secrets.SETUP_PHP_AWS_ACCESS_KEY_ID }}
+          SETUP_PHP_AWS_SECRET_ACCESS_KEY: ${{ secrets.SETUP_PHP_AWS_SECRET_ACCESS_KEY }}
+          SETUP_PHP_AWS_S3_ENDPOINT: ${{ secrets.SETUP_PHP_AWS_S3_ENDPOINT }}
+        run: python3 scripts/mirror-github-release.py publish "$RUNNER_TEMP/mirror"
+      - name: Preserve transfer receipt
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mirror-receipt-${{ matrix.php }}
+          path: ${{ runner.temp }}/mirror/receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+  shared:
+    name: Mirror shared installer scripts
+    needs: [versions, mirror]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: php-ubuntu-release-mirror-shared
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install transfer clients
+        run: |
+          python3 -m venv "$RUNNER_TEMP/mirror-tools"
+          "$RUNNER_TEMP/mirror-tools/bin/pip" install cloudsmith-cli awscli
+          echo "$RUNNER_TEMP/mirror-tools/bin" >> "$GITHUB_PATH"
+      - name: Download and verify published release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PHP_VERSION: shared
+          SOURCE_VERSION: ${{ needs.versions.outputs.shared_version }}
+        run: python3 scripts/mirror-github-release.py download "$PHP_VERSION" "$RUNNER_TEMP/mirror" "$SOURCE_VERSION"
+      - name: Upload and verify existing mirrors
+        env:
+          CF_R2_AWS_ACCESS_KEY_ID: ${{ secrets.CF_R2_AWS_ACCESS_KEY_ID }}
+          CF_R2_AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_AWS_SECRET_ACCESS_KEY }}
+          CF_R2_AWS_S3_ENDPOINT: ${{ secrets.CF_R2_AWS_S3_ENDPOINT }}
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+          SETUP_PHP_AWS_ACCESS_KEY_ID: ${{ secrets.SETUP_PHP_AWS_ACCESS_KEY_ID }}
+          SETUP_PHP_AWS_SECRET_ACCESS_KEY: ${{ secrets.SETUP_PHP_AWS_SECRET_ACCESS_KEY }}
+          SETUP_PHP_AWS_S3_ENDPOINT: ${{ secrets.SETUP_PHP_AWS_S3_ENDPOINT }}
+        run: python3 scripts/mirror-github-release.py publish "$RUNNER_TEMP/mirror"
+      - name: Preserve transfer receipt
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mirror-receipt-shared
+          path: ${{ runner.temp }}/mirror/receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Refresh the existing php-ubuntu cache tag
+        env:
+          CF_CACHE_ZONE: ${{ secrets.CF_CACHE_ZONE }}
+          CF_CACHE_KEY: ${{ secrets.CF_CACHE_KEY }}
+        run: |
+          test -n "$CF_CACHE_ZONE" && test -n "$CF_CACHE_KEY"
+          curl --fail-with-body --silent --show-error \
+            -X POST "https://api.cloudflare.com/client/v4/zones/$CF_CACHE_ZONE/purge_cache" \
+            -H "Authorization: Bearer $CF_CACHE_KEY" -H 'Content-Type: application/json' \
+            --data '{"tags":["php-ubuntu"]}' | jq -e '.success == true'
