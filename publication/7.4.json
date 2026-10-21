@@ -1,0 +1,492 @@
+{
+  "repository": "shivammathur/php-ubuntu",
+  "minor": "7.4",
+  "tag": "builds",
+  "release_id": 39619287,
+  "files": [
+    {
+      "name": "php_7.4-nts+ubuntu22.04.tar.zst",
+      "bytes": 27934682,
+      "sha256": "822ba56ac9206eb5c0951dbeb3947c356eb839e27104f5bbc4ab13f2d276f4cd"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu22.04.tar.zst",
+      "bytes": 27934682,
+      "sha256": "822ba56ac9206eb5c0951dbeb3947c356eb839e27104f5bbc4ab13f2d276f4cd"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu22.04.tar.zst",
+      "bytes": 81435196,
+      "sha256": "c2a619b59740c4f4b888acffff4310838a4f5b440b576e436fe5e84a8379f5d0"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu22.04.tar.zst",
+      "bytes": 81435196,
+      "sha256": "c2a619b59740c4f4b888acffff4310838a4f5b440b576e436fe5e84a8379f5d0"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu22.04.tar.zst",
+      "bytes": 28075857,
+      "sha256": "116d7b5937309121965a14d07bd6aa60ce4b851ab1b437e5e38bbe4692b1bac0"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu22.04.tar.zst",
+      "bytes": 28075857,
+      "sha256": "116d7b5937309121965a14d07bd6aa60ce4b851ab1b437e5e38bbe4692b1bac0"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu22.04.tar.zst",
+      "bytes": 81842956,
+      "sha256": "ea17f60c6ed12a6ea70bbcceaa496a82dc5d57a25b7e7ec2a19cafd61ad4c70d"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu22.04.tar.zst",
+      "bytes": 81842956,
+      "sha256": "ea17f60c6ed12a6ea70bbcceaa496a82dc5d57a25b7e7ec2a19cafd61ad4c70d"
+    },
+    {
+      "name": "php_7.4-nts+ubuntu24.04.tar.zst",
+      "bytes": 39439675,
+      "sha256": "aa892d2b0c6b0a39201bf50c1f7cc25fd0892e3f09aca58b1548cda3524a054e"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu24.04.tar.zst",
+      "bytes": 39439675,
+      "sha256": "aa892d2b0c6b0a39201bf50c1f7cc25fd0892e3f09aca58b1548cda3524a054e"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu24.04.tar.zst",
+      "bytes": 92058718,
+      "sha256": "c910bffceaa8d081cdbcf7bc3afe27c195b4a4f78af0bde4d3ffd895a1dadf33"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu24.04.tar.zst",
+      "bytes": 92058718,
+      "sha256": "c910bffceaa8d081cdbcf7bc3afe27c195b4a4f78af0bde4d3ffd895a1dadf33"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu24.04.tar.zst",
+      "bytes": 40697562,
+      "sha256": "51e9731c58b812095f3d06299293c995faf92301654188fec7436cf12ff5e695"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu24.04.tar.zst",
+      "bytes": 40697562,
+      "sha256": "51e9731c58b812095f3d06299293c995faf92301654188fec7436cf12ff5e695"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu24.04.tar.zst",
+      "bytes": 93436808,
+      "sha256": "f52b80de697b51bea846594bec2f9e9762d266fc632d86a0be823fd3e3f90f49"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu24.04.tar.zst",
+      "bytes": 93436808,
+      "sha256": "f52b80de697b51bea846594bec2f9e9762d266fc632d86a0be823fd3e3f90f49"
+    },
+    {
+      "name": "php_7.4-nts+ubuntu26.04.tar.zst",
+      "bytes": 37449849,
+      "sha256": "a54be456f858960d7d6e11e78d65ce5c6b1e24ed2232b24b8b7fc41a80fa4e95"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu26.04.tar.zst",
+      "bytes": 37449849,
+      "sha256": "a54be456f858960d7d6e11e78d65ce5c6b1e24ed2232b24b8b7fc41a80fa4e95"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu26.04.tar.zst",
+      "bytes": 91478788,
+      "sha256": "ca1b3c4994ba88a89ac3dd3e934854187de85f830359cc36585c1a7c9b4c8bc3"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu26.04.tar.zst",
+      "bytes": 91478788,
+      "sha256": "ca1b3c4994ba88a89ac3dd3e934854187de85f830359cc36585c1a7c9b4c8bc3"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu26.04.tar.zst",
+      "bytes": 37541787,
+      "sha256": "996198f1a0dad6db65dc1662429cbdd423c59e9c8d04abda1042742c4adada28"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu26.04.tar.zst",
+      "bytes": 37541787,
+      "sha256": "996198f1a0dad6db65dc1662429cbdd423c59e9c8d04abda1042742c4adada28"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu26.04.tar.zst",
+      "bytes": 90856942,
+      "sha256": "428156d51b781836a69681d2b0094fd28e4bbf44005bbf993495d5428d2c252c"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu26.04.tar.zst",
+      "bytes": 90856942,
+      "sha256": "428156d51b781836a69681d2b0094fd28e4bbf44005bbf993495d5428d2c252c"
+    },
+    {
+      "name": "php_7.4-nts+ubuntu22.04_arm64.tar.zst",
+      "bytes": 27608104,
+      "sha256": "6e419acfc7c9a4688bfbde5fb6f1e2d1ab923fc84bf0d9aaab58f862a4f84b25"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu22.04_arm64.tar.zst",
+      "bytes": 27608104,
+      "sha256": "6e419acfc7c9a4688bfbde5fb6f1e2d1ab923fc84bf0d9aaab58f862a4f84b25"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu22.04_arm64.tar.zst",
+      "bytes": 79155226,
+      "sha256": "57a849e39422c96e5f4b05b31325f921d5727624f9da4e5c7b953c070608a866"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu22.04_arm64.tar.zst",
+      "bytes": 79155226,
+      "sha256": "57a849e39422c96e5f4b05b31325f921d5727624f9da4e5c7b953c070608a866"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu22.04_arm64.tar.zst",
+      "bytes": 27749437,
+      "sha256": "15a92f9654b9f4a9ecf2756e48bc7a94a02539a244e7439460ccf3e1b54ab9b0"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu22.04_arm64.tar.zst",
+      "bytes": 27749437,
+      "sha256": "15a92f9654b9f4a9ecf2756e48bc7a94a02539a244e7439460ccf3e1b54ab9b0"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu22.04_arm64.tar.zst",
+      "bytes": 79675842,
+      "sha256": "dfd309bd4a1375f8a342be010d6c3b5a9de2350088fa9ba81b0074985852be9b"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu22.04_arm64.tar.zst",
+      "bytes": 79675842,
+      "sha256": "dfd309bd4a1375f8a342be010d6c3b5a9de2350088fa9ba81b0074985852be9b"
+    },
+    {
+      "name": "php_7.4-nts+ubuntu24.04_arm64.tar.zst",
+      "bytes": 37480955,
+      "sha256": "9f449b5d22107951bbc03b5c8e1af07f2dfb1a68537a55e3b9587e16f5bedb55"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu24.04_arm64.tar.zst",
+      "bytes": 37480955,
+      "sha256": "9f449b5d22107951bbc03b5c8e1af07f2dfb1a68537a55e3b9587e16f5bedb55"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu24.04_arm64.tar.zst",
+      "bytes": 87876695,
+      "sha256": "c75016fc63f25ab31c7475a1b9eac40ace109594f00632aec84ec4cf863dd76a"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu24.04_arm64.tar.zst",
+      "bytes": 87876695,
+      "sha256": "c75016fc63f25ab31c7475a1b9eac40ace109594f00632aec84ec4cf863dd76a"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu24.04_arm64.tar.zst",
+      "bytes": 36588252,
+      "sha256": "795d3c585c9464d70f316486c846aa9baee5eb0c4fa8345d117a56b6ffeade1d"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu24.04_arm64.tar.zst",
+      "bytes": 36588252,
+      "sha256": "795d3c585c9464d70f316486c846aa9baee5eb0c4fa8345d117a56b6ffeade1d"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu24.04_arm64.tar.zst",
+      "bytes": 88157891,
+      "sha256": "3d4a9384292f044d7c452f59562cb2522936f10d37a163d21449d27c927d0fad"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu24.04_arm64.tar.zst",
+      "bytes": 88157891,
+      "sha256": "3d4a9384292f044d7c452f59562cb2522936f10d37a163d21449d27c927d0fad"
+    },
+    {
+      "name": "php_7.4-nts+ubuntu26.04_arm64.tar.zst",
+      "bytes": 36169247,
+      "sha256": "2388fc83290e3a6c56c9f34123802382f50c3cb27de9c2dda10b104a2febafdc"
+    },
+    {
+      "name": "php_7.4.33-nts+ubuntu26.04_arm64.tar.zst",
+      "bytes": 36169247,
+      "sha256": "2388fc83290e3a6c56c9f34123802382f50c3cb27de9c2dda10b104a2febafdc"
+    },
+    {
+      "name": "php_7.4-nts-dbgsym+ubuntu26.04_arm64.tar.zst",
+      "bytes": 86624725,
+      "sha256": "534c31102b801474b9b6a3c5f5bda7d85622f7f60c6029ee35ee9670fc69cd08"
+    },
+    {
+      "name": "php_7.4.33-nts-dbgsym+ubuntu26.04_arm64.tar.zst",
+      "bytes": 86624725,
+      "sha256": "534c31102b801474b9b6a3c5f5bda7d85622f7f60c6029ee35ee9670fc69cd08"
+    },
+    {
+      "name": "php_7.4-zts+ubuntu26.04_arm64.tar.zst",
+      "bytes": 36313032,
+      "sha256": "9e00391ecb313efb3981e6b8b3873617dfb6387b320951c96fb73f5a66a8d993"
+    },
+    {
+      "name": "php_7.4.33-zts+ubuntu26.04_arm64.tar.zst",
+      "bytes": 36313032,
+      "sha256": "9e00391ecb313efb3981e6b8b3873617dfb6387b320951c96fb73f5a66a8d993"
+    },
+    {
+      "name": "php_7.4-zts-dbgsym+ubuntu26.04_arm64.tar.zst",
+      "bytes": 87037690,
+      "sha256": "de5c43efdc97464bd8aad3082b766b52e69af44245345f40236187a1f98792a4"
+    },
+    {
+      "name": "php_7.4.33-zts-dbgsym+ubuntu26.04_arm64.tar.zst",
+      "bytes": 87037690,
+      "sha256": "de5c43efdc97464bd8aad3082b766b52e69af44245345f40236187a1f98792a4"
+    }
+  ],
+  "backed_up_before": {
+    "php_7.4-nts+ubuntu22.04.tar.zst": {
+      "id": 613068045,
+      "size": 32035593,
+      "digest": "sha256:b95fe3fddc42db15095514c8603e1460ff93499b8f9737af79e3459d415f1c32"
+    },
+    "php_7.4-nts+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069448,
+      "size": 31391030,
+      "digest": "sha256:8ea2819b3d9c424810ac84e746efb21194c75c376444c54fc8a88f2fc0335f3d"
+    },
+    "php_7.4-nts+ubuntu24.04.tar.zst": {
+      "id": 613071167,
+      "size": 42104403,
+      "digest": "sha256:0a385be48c719ce0cd3441572f63d38147417090e94539a2036442ac59ed19ca"
+    },
+    "php_7.4-nts+ubuntu24.04_arm64.tar.zst": {
+      "id": 613072624,
+      "size": 37288402,
+      "digest": "sha256:348e6ed5c17c1a1321cf7acc3f6188942bf95eba3de7d75c5fe1f7b860d9bff6"
+    },
+    "php_7.4-nts+ubuntu26.04.tar.zst": {
+      "id": 613074013,
+      "size": 37275458,
+      "digest": "sha256:fff9f7fcdfbbc8b811802c63ee654ba102bcbdcb34928b4dd4f2c1ce295e4b81"
+    },
+    "php_7.4-nts+ubuntu26.04_arm64.tar.zst": {
+      "id": 613075333,
+      "size": 36015898,
+      "digest": "sha256:3e1a58811bd05a5f4ba55c77ba7147eae120a19c6916bf2a37958ba6cecaab80"
+    },
+    "php_7.4-nts-dbgsym+ubuntu22.04.tar.zst": {
+      "id": 613067153,
+      "size": 72462280,
+      "digest": "sha256:45758fbb8d3a44f3d9d26325c9821dff8d5e9f1cdfec6c62e8107df49c442764"
+    },
+    "php_7.4-nts-dbgsym+ubuntu22.04_arm64.tar.zst": {
+      "id": 613068571,
+      "size": 71139757,
+      "digest": "sha256:7f5300bee9aac55789aae6520cc81b9595645b84fb42c6e7dc3283aad52cc686"
+    },
+    "php_7.4-nts-dbgsym+ubuntu24.04.tar.zst": {
+      "id": 613070018,
+      "size": 94601861,
+      "digest": "sha256:815a33cb566fd749ab19229ea0383792cde7488372723db75eb9bf8bb4f855da"
+    },
+    "php_7.4-nts-dbgsym+ubuntu24.04_arm64.tar.zst": {
+      "id": 613071769,
+      "size": 87665680,
+      "digest": "sha256:967a034ead0a4e3a382fffe05d7390b74751d4975b9418fdf70536eac4f24cd2"
+    },
+    "php_7.4-nts-dbgsym+ubuntu26.04.tar.zst": {
+      "id": 613073123,
+      "size": 91265680,
+      "digest": "sha256:155814fbc31768b2556916e477af8256375b12feb91546146883e684020c45ad"
+    },
+    "php_7.4-nts-dbgsym+ubuntu26.04_arm64.tar.zst": {
+      "id": 613074470,
+      "size": 86515732,
+      "digest": "sha256:a7dd5df4b92976ff6eeddc6c0f5a6dd1964d7512aaf9ccbe500dd4f53aa4dbf8"
+    },
+    "php_7.4-zts+ubuntu22.04.tar.zst": {
+      "id": 613068275,
+      "size": 27917518,
+      "digest": "sha256:8e8300d47e130680f7c69036246cef231d020e3dd8aac4a617865ad092280ced"
+    },
+    "php_7.4-zts+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069714,
+      "size": 27598904,
+      "digest": "sha256:7042cf28b3734fe7206a114938b7657a2a9939c357e67270f31b26bc3cd34b1c"
+    },
+    "php_7.4-zts+ubuntu24.04.tar.zst": {
+      "id": 613071498,
+      "size": 42263982,
+      "digest": "sha256:18937278ac540d6d23166b3b4cf92dfb70fb56774918823e1b6d391e18961814"
+    },
+    "php_7.4-zts+ubuntu24.04_arm64.tar.zst": {
+      "id": 613072849,
+      "size": 37471855,
+      "digest": "sha256:cb67b20b500fbf221310ff923134423c56e0245d3deaa4bea05dfdfc24144f9c"
+    },
+    "php_7.4-zts+ubuntu26.04.tar.zst": {
+      "id": 613074267,
+      "size": 37382812,
+      "digest": "sha256:60a76e395c280b56351a4610530722a19df0423a2feabd9d7296f20b376527bc"
+    },
+    "php_7.4-zts+ubuntu26.04_arm64.tar.zst": {
+      "id": 613075798,
+      "size": 36138527,
+      "digest": "sha256:39eae55954e1b2b5cfe1524c816a90cbe3e5341a4870cc70bcd4c29bec88ac44"
+    },
+    "php_7.4-zts-dbgsym+ubuntu22.04.tar.zst": {
+      "id": 613067568,
+      "size": 81723351,
+      "digest": "sha256:bfa5fbfbd073a22d4fe28995285bb272923aa182331bdfaf75a042640955f99e"
+    },
+    "php_7.4-zts-dbgsym+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069069,
+      "size": 79596291,
+      "digest": "sha256:02cea8c524f1f6a3dfd4634feeb17508e14fe8d85b22326fc9a753a93e8a116c"
+    },
+    "php_7.4-zts-dbgsym+ubuntu24.04.tar.zst": {
+      "id": 613070605,
+      "size": 94930541,
+      "digest": "sha256:341cccad41b58b0468799a6c68d00f7b3e105d10f005123f213e609d838db365"
+    },
+    "php_7.4-zts-dbgsym+ubuntu24.04_arm64.tar.zst": {
+      "id": 613072212,
+      "size": 88173553,
+      "digest": "sha256:f535107bca35a6eef68ecfd41603e1a03cfdb00aca4b7e2777b3d76643be8305"
+    },
+    "php_7.4-zts-dbgsym+ubuntu26.04.tar.zst": {
+      "id": 613073575,
+      "size": 91657467,
+      "digest": "sha256:50e6eecd657f35ed0c8627a07b75fe81cca6e2332d2c7800fb05dfdd4c21b1c4"
+    },
+    "php_7.4-zts-dbgsym+ubuntu26.04_arm64.tar.zst": {
+      "id": 613074886,
+      "size": 86791567,
+      "digest": "sha256:fd6fa5fc04faf01e8f7518f5c2ce08f3169f40d9ca59926ad0bfec006cb7ed09"
+    },
+    "php_7.4.33-nts+ubuntu22.04.tar.zst": {
+      "id": 613068154,
+      "size": 32035593,
+      "digest": "sha256:b95fe3fddc42db15095514c8603e1460ff93499b8f9737af79e3459d415f1c32"
+    },
+    "php_7.4.33-nts+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069580,
+      "size": 31391030,
+      "digest": "sha256:8ea2819b3d9c424810ac84e746efb21194c75c376444c54fc8a88f2fc0335f3d"
+    },
+    "php_7.4.33-nts+ubuntu24.04.tar.zst": {
+      "id": 613071307,
+      "size": 42104403,
+      "digest": "sha256:0a385be48c719ce0cd3441572f63d38147417090e94539a2036442ac59ed19ca"
+    },
+    "php_7.4.33-nts+ubuntu24.04_arm64.tar.zst": {
+      "id": 613072726,
+      "size": 37288402,
+      "digest": "sha256:348e6ed5c17c1a1321cf7acc3f6188942bf95eba3de7d75c5fe1f7b860d9bff6"
+    },
+    "php_7.4.33-nts+ubuntu26.04.tar.zst": {
+      "id": 613074151,
+      "size": 37275458,
+      "digest": "sha256:fff9f7fcdfbbc8b811802c63ee654ba102bcbdcb34928b4dd4f2c1ce295e4b81"
+    },
+    "php_7.4.33-nts+ubuntu26.04_arm64.tar.zst": {
+      "id": 613075500,
+      "size": 36015898,
+      "digest": "sha256:3e1a58811bd05a5f4ba55c77ba7147eae120a19c6916bf2a37958ba6cecaab80"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu22.04.tar.zst": {
+      "id": 613067382,
+      "size": 72462280,
+      "digest": "sha256:45758fbb8d3a44f3d9d26325c9821dff8d5e9f1cdfec6c62e8107df49c442764"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu22.04_arm64.tar.zst": {
+      "id": 613068856,
+      "size": 71139757,
+      "digest": "sha256:7f5300bee9aac55789aae6520cc81b9595645b84fb42c6e7dc3283aad52cc686"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu24.04.tar.zst": {
+      "id": 613070319,
+      "size": 94601861,
+      "digest": "sha256:815a33cb566fd749ab19229ea0383792cde7488372723db75eb9bf8bb4f855da"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu24.04_arm64.tar.zst": {
+      "id": 613071942,
+      "size": 87665680,
+      "digest": "sha256:967a034ead0a4e3a382fffe05d7390b74751d4975b9418fdf70536eac4f24cd2"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu26.04.tar.zst": {
+      "id": 613073362,
+      "size": 91265680,
+      "digest": "sha256:155814fbc31768b2556916e477af8256375b12feb91546146883e684020c45ad"
+    },
+    "php_7.4.33-nts-dbgsym+ubuntu26.04_arm64.tar.zst": {
+      "id": 613074704,
+      "size": 86515732,
+      "digest": "sha256:a7dd5df4b92976ff6eeddc6c0f5a6dd1964d7512aaf9ccbe500dd4f53aa4dbf8"
+    },
+    "php_7.4.33-zts+ubuntu22.04.tar.zst": {
+      "id": 613068404,
+      "size": 27917518,
+      "digest": "sha256:8e8300d47e130680f7c69036246cef231d020e3dd8aac4a617865ad092280ced"
+    },
+    "php_7.4.33-zts+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069896,
+      "size": 27598904,
+      "digest": "sha256:7042cf28b3734fe7206a114938b7657a2a9939c357e67270f31b26bc3cd34b1c"
+    },
+    "php_7.4.33-zts+ubuntu24.04.tar.zst": {
+      "id": 613071650,
+      "size": 42263982,
+      "digest": "sha256:18937278ac540d6d23166b3b4cf92dfb70fb56774918823e1b6d391e18961814"
+    },
+    "php_7.4.33-zts+ubuntu24.04_arm64.tar.zst": {
+      "id": 613073001,
+      "size": 37471855,
+      "digest": "sha256:cb67b20b500fbf221310ff923134423c56e0245d3deaa4bea05dfdfc24144f9c"
+    },
+    "php_7.4.33-zts+ubuntu26.04.tar.zst": {
+      "id": 613074376,
+      "size": 37382812,
+      "digest": "sha256:60a76e395c280b56351a4610530722a19df0423a2feabd9d7296f20b376527bc"
+    },
+    "php_7.4.33-zts+ubuntu26.04_arm64.tar.zst": {
+      "id": 613075951,
+      "size": 36138527,
+      "digest": "sha256:39eae55954e1b2b5cfe1524c816a90cbe3e5341a4870cc70bcd4c29bec88ac44"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu22.04.tar.zst": {
+      "id": 613067798,
+      "size": 81723351,
+      "digest": "sha256:bfa5fbfbd073a22d4fe28995285bb272923aa182331bdfaf75a042640955f99e"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu22.04_arm64.tar.zst": {
+      "id": 613069237,
+      "size": 79596291,
+      "digest": "sha256:02cea8c524f1f6a3dfd4634feeb17508e14fe8d85b22326fc9a753a93e8a116c"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu24.04.tar.zst": {
+      "id": 613070906,
+      "size": 94930541,
+      "digest": "sha256:341cccad41b58b0468799a6c68d00f7b3e105d10f005123f213e609d838db365"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu24.04_arm64.tar.zst": {
+      "id": 613072389,
+      "size": 88173553,
+      "digest": "sha256:f535107bca35a6eef68ecfd41603e1a03cfdb00aca4b7e2777b3d76643be8305"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu26.04.tar.zst": {
+      "id": 613073799,
+      "size": 91657467,
+      "digest": "sha256:50e6eecd657f35ed0c8627a07b75fe81cca6e2332d2c7800fb05dfdd4c21b1c4"
+    },
+    "php_7.4.33-zts-dbgsym+ubuntu26.04_arm64.tar.zst": {
+      "id": 613075120,
+      "size": 86791567,
+      "digest": "sha256:fd6fa5fc04faf01e8f7518f5c2ce08f3169f40d9ca59926ad0bfec006cb7ed09"
+    }
+  },
+  "explicit_owner_promotion": true,
+  "recoverable_backups_verified_locally": true
+}
