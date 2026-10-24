@@ -36,7 +36,8 @@ upload_to_setup_php_s3() {
   export AWS_ACCESS_KEY_ID="$SETUP_PHP_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_ACCESS_KEY="$SETUP_PHP_AWS_SECRET_ACCESS_KEY"
   for asset in "$@"; do      
-    aws --endpoint-url "$SETUP_PHP_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
+    # This S3-compatible endpoint rejects optional multipart checksum headers.
+    AWS_REQUEST_CHECKSUM_CALCULATION=when_required aws --endpoint-url "$SETUP_PHP_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
   done
   clear_cf_cache
 }
