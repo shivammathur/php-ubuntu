@@ -1,0 +1,30 @@
+name: Diagnose cache publication
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: pip install boto3
+      - name: Test uploads of verified cache bytes
+        run: python publication/brotli-20261024/diagnose-s3.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SETUP_PHP_AWS_S3_ENDPOINT: ${{ secrets.SETUP_PHP_AWS_S3_ENDPOINT }}
+          SETUP_PHP_AWS_ACCESS_KEY_ID: ${{ secrets.SETUP_PHP_AWS_ACCESS_KEY_ID }}
+          SETUP_PHP_AWS_SECRET_ACCESS_KEY: ${{ secrets.SETUP_PHP_AWS_SECRET_ACCESS_KEY }}
+          CF_R2_AWS_S3_ENDPOINT: ${{ secrets.CF_R2_AWS_S3_ENDPOINT }}
+          CF_R2_AWS_ACCESS_KEY_ID: ${{ secrets.CF_R2_AWS_ACCESS_KEY_ID }}
+          CF_R2_AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_AWS_SECRET_ACCESS_KEY }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s3-diagnosis
+          path: s3-diagnosis.json
