@@ -1,6 +1,10 @@
 add_assets() {
   ls -laR ./builds
   for asset in ./builds/*/*; do
+    if [[ ! "$(basename "$asset")" =~ ^php_[0-9]+\.[0-9]+(\.[0-9]+([[:alpha:]]+[0-9]+)?)?-(nts|zts)(-dbgsym)?\+ubuntu[0-9]{2}\.[0-9]{2}(_arm64)?\.tar\.zst$ ]]; then
+      echo "Invalid PHP cache filename: $asset" >&2
+      return 1
+    fi
     assets+=("$asset")
     if [[ ! "$(basename "$asset")" =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
       cds_assets+=("$asset")
@@ -12,7 +16,7 @@ release_cds() {
   sudo cp ./scripts/cds /usr/local/bin/cds && sudo sed -i "s|REPO|$GITHUB_REPOSITORY|" /usr/local/bin/cds && sudo chmod a+x /usr/local/bin/cds
   if [[ "$GITHUB_MESSAGE" != *skip-cloudsmith* ]]; then
     cp ./scripts/install.sh ./scripts/php-ubuntu.sh
-    echo "${cds_assets[@]}" ./scripts/php-ubuntu.sh | xargs -n 1 -P 8 cds
+    echo "${cds_assets[@]}" ./scripts/php-ubuntu.sh | xargs -n 1 -P 8 cds || return 1
   fi
 }
 
@@ -47,21 +51,20 @@ upload_to_cloudflare_r2_s3() {
 
 release_distribute() {
   install_awscli
-  release_cds
+  release_cds || return 1
   upload_to_setup_php_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
   upload_to_cloudflare_r2_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
 }
 
 release_create() {
-  release_distribute
+  release_distribute || return 1
   gh release create "builds" ./scripts/install.sh "${assets[@]}" -n "builds $version" -t "builds"
 }
 
 release_upload() {
   gh release download -p "build.log" || true
-  gh release upload "builds" ./scripts/install.sh --clobber
   for asset in "${assets[@]}" ./scripts/install.sh; do
-    gh release upload "builds" "$asset" --clobber
+    gh release upload "builds" "$asset" --clobber || return 1
   done  
   release_distribute
 }
@@ -75,11 +78,11 @@ version=$(date '+%Y.%m.%d')
 assets=()
 cds_assets=()
 rm -rf ./builds/zstd*
-add_assets
+add_assets || exit 1
 cd "$GITHUB_WORKSPACE" || exit 1
 if ! gh release view builds; then
-  release_create
+  release_create || exit 1
 else
-  release_upload
+  release_upload || exit 1
 fi
 log
