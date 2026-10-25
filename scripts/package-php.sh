@@ -265,7 +265,12 @@ sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-ol
 optimize_package
 # shellcheck disable=SC1091
 . /etc/os-release
-SEMVER="$(php-config --version | cut -f 1 -d '-')"
+SEMVER="$("php-config${PHP_VERSION:?}" --version)" || exit 1
+SEMVER="${SEMVER%%-*}"
+if [[ "$SEMVER" != "$PHP_VERSION".* || ! "$SEMVER" =~ ^[0-9]+\.[0-9]+\.[0-9]+([[:alpha:]]+[0-9]+)?$ ]]; then
+  echo "Invalid PHP version for $PHP_VERSION: $SEMVER" >&2
+  exit 1
+fi
 arch="$(arch)"
 [[ "$arch" = "aarch64" || "$arch" = "arm64" ]] && ARCH_SUFFIX='_arm64' || ARCH_SUFFIX=''
 build_path=/tmp/php_"$PHP_VERSION-$TS$PHP_PKG_SUFFIX"+ubuntu"$VERSION_ID$ARCH_SUFFIX".tar.zst

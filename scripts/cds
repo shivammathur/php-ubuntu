@@ -3,4 +3,3 @@
 file=$1
 file_name="$(basename "$file")"
 cloudsmith push raw REPO "$file" --republish --summary "$file_name" --description "$file_name"
-exit 0
