@@ -18,6 +18,7 @@ libldb2
 libmcrypt4
 libodbcinst2
 libopenexr-3-1-30
+libpcre2-8-0
 librav1e0
 librdkafka1
 librrd8t64

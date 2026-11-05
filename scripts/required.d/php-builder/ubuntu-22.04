@@ -7,6 +7,7 @@ libgearman8
 libimagequant0
 libldb2
 libmcrypt4
+libpcre2-8-0
 librdkafka1
 librrd8
 libsmbclient
