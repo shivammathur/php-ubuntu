@@ -7,10 +7,7 @@ tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
 broken_file="$tmp_dir/broken.tsv"
-dispatch_file="$tmp_dir/dispatch.tsv"
-grouped_dispatch_file="$tmp_dir/grouped-dispatch.tsv"
 : > "$broken_file"
-: > "$dispatch_file"
 
 reports=()
 while IFS= read -r report; do
@@ -99,6 +96,7 @@ if [ ! -s "$broken_file" ]; then
 fi
 
 sort -u -k1,2 "$broken_file" > "$tmp_dir/unique-broken.tsv"
+cut -f1 "$broken_file" | sort -u > "$tmp_dir/broken-versions.txt"
 
 {
   echo
@@ -110,8 +108,6 @@ sort -u -k1,2 "$broken_file" > "$tmp_dir/unique-broken.tsv"
 
 while IFS=$'\t' read -r php_version os _report; do
   container="$(container_for_os "$os")"
-  workflow="$(workflow_for_php "$php_version")"
-  printf '%s\t%s\t%s\n' "$php_version" "$workflow" "$container" >> "$dispatch_file"
   echo "| $php_version | $os | $container |" | append_summary
 done < "$tmp_dir/unique-broken.tsv"
 
@@ -144,34 +140,22 @@ while IFS=$'\t' read -r php_version os report; do
   } | append_summary
 done < "$tmp_dir/unique-broken.tsv"
 
-awk -F '\t' '
-  {
-    key = $1 "\t" $2
-    container_key = key "\t" $3
-    if (!seen[container_key]++) {
-      containers[key] = containers[key] ? containers[key] " " $3 : $3
-    }
-  }
-  END {
-    for (key in containers) {
-      print key "\t" containers[key]
-    }
-  }
-' "$dispatch_file" | sort > "$grouped_dispatch_file"
-
 {
   echo
   echo '### Dispatched cache workflows'
   echo
-  echo '| PHP | Workflow | Containers |'
+  echo '| PHP | Workflow | Build coverage |'
   echo '| --- | --- | --- |'
 } | append_summary
 
-while IFS=$'\t' read -r php_version workflow containers; do
-  echo "Dispatching $workflow for PHP $php_version on containers: $containers"
-  gh workflow run "$workflow" --repo "${REPO:?}" --ref "${REF:?}" -f php-version="$php_version" -f containers="$containers"
-  echo "| $php_version | $workflow | $containers |" | append_summary
-done < "$grouped_dispatch_file"
+while IFS= read -r php_version; do
+  workflow="$(workflow_for_php "$php_version")"
+  echo "Dispatching $workflow for PHP $php_version for all variants and OS containers"
+  # Runner image rollouts can expose failures on only part of the test matrix.
+  # Use the workflow defaults to rebuild every variant and OS for this version.
+  gh workflow run "$workflow" --repo "${REPO:?}" --ref "${REF:?}" -f php-version="$php_version"
+  echo "| $php_version | $workflow | All variants and OS containers (workflow defaults) |" | append_summary
+done < "$tmp_dir/broken-versions.txt"
 
 echo "Dispatched cache workflow run(s)."
 exit 1

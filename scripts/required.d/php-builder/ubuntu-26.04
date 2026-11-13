@@ -21,7 +21,9 @@ libpcre2-8-0
 librdkafka1
 librrd8t64
 libsmbclient0
+libtalloc2
 libtevent0t64
+libwbclient0
 libwmflite-0.2-7
 libxmlrpc-epi0t64
 libyuv0
