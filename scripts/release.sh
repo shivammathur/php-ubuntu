@@ -46,7 +46,7 @@ upload_to_cloudflare_r2_s3() {
   export AWS_ACCESS_KEY_ID="$CF_R2_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_ACCESS_KEY="$CF_R2_AWS_SECRET_ACCESS_KEY"
   for asset in "$@"; do
-    aws --endpoint-url "$CF_R2_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
+    aws --region auto --endpoint-url "$CF_R2_AWS_S3_ENDPOINT" s3 cp "$asset" "s3://php-ubuntu/$(basename "$asset")" --only-show-errors || return 1
   done
 }
 
