@@ -22,8 +22,12 @@ release_cds() {
 
 install_awscli() {
   if ! command -v aws >/dev/null 2>&1; then
-      pip3 install --upgrade awscli >/dev/null
+    pip3 install --upgrade awscli >/dev/null || return 1
   fi
+  # Avoid CRT transfer timeouts with the S3-compatible mirrors.
+  aws configure set s3.preferred_transfer_client classic || return 1
+  aws configure set retry_mode standard || return 1
+  aws configure set max_attempts 5
 }
 
 clear_cf_cache() {
@@ -33,6 +37,7 @@ clear_cf_cache() {
 }
 
 upload_to_setup_php_s3() {
+  echo "Uploading artifacts to setup-php S3"
   export AWS_ACCESS_KEY_ID="$SETUP_PHP_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_ACCESS_KEY="$SETUP_PHP_AWS_SECRET_ACCESS_KEY"
   for asset in "$@"; do      
@@ -43,6 +48,7 @@ upload_to_setup_php_s3() {
 }
 
 upload_to_cloudflare_r2_s3() {
+  echo "Uploading artifacts to Cloudflare R2"
   export AWS_ACCESS_KEY_ID="$CF_R2_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_ACCESS_KEY="$CF_R2_AWS_SECRET_ACCESS_KEY"
   for asset in "$@"; do
@@ -51,7 +57,7 @@ upload_to_cloudflare_r2_s3() {
 }
 
 release_distribute() {
-  install_awscli
+  install_awscli || return 1
   release_cds || return 1
   upload_to_setup_php_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
   upload_to_cloudflare_r2_s3 "${cds_assets[@]}" ./scripts/install.sh || return 1
