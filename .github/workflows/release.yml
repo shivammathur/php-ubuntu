@@ -12,6 +12,10 @@ on:
 jobs:  
   release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: php-ubuntu-release
+      queue: max
+      cancel-in-progress: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4

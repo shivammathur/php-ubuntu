@@ -165,6 +165,10 @@ jobs:
           [ "$broken" != true ]
   release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: php-ubuntu-release
+      queue: max
+      cancel-in-progress: false
     needs: [get-matrix, cache, tests]
     if: "!contains(github.event.head_commit.message, 'skip-release')"
     steps:
