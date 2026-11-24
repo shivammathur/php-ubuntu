@@ -262,6 +262,7 @@ if [ "$source" = "packages" ]; then
   sudo cp -a /usr/share/keyrings/ondrej-php-keyring.gpg /tmp/php/usr/share/keyrings/ondrej-php-keyring.gpg
 fi
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
+sudo rm -f /tmp/php/var/lib/dpkg/diversions /tmp/php/var/lib/dpkg/diversions-old
 optimize_package
 # shellcheck disable=SC1091
 . /etc/os-release
