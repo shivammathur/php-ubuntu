@@ -70,17 +70,10 @@ jobs:
           NIGHTLY: 'true'
           TS: ${{ matrix.ts }}
 
-      - name: Get ZSTD_DIR
-        id: zstd
-        run: echo "ZSTD_DIR=zstd-$(curl -fsSL https://api.github.com/repos/facebook/zstd/releases/latest | jq -r '.tag_name | ltrimstr("v")')" | tee -a "$GITHUB_OUTPUT"
-
       - name: Add ZSTD
         env:
           CONTAINER: ${{ matrix.container }}
-          REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USER: ${{ github.repository_owner }}
-          ZSTD_DIR: ${{ steps.zstd.outputs.ZSTD_DIR }}
         run: bash scripts/install-zstd.sh
 
       - name: Capture filesystem snapshot
