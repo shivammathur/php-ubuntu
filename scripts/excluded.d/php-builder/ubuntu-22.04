@@ -1,3 +1,6 @@
+libdav1d-dev
+libdav1d-dev:*
+libelf1
 libgraphite2-dev
 libgraphite2-dev:*
 liblcms2-dev
