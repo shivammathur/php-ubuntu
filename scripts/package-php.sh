@@ -247,7 +247,6 @@ sudo rm -f /tmp/php_"$PHP_VERSION$PHP_PKG_SUFFIX"+*.tar.zst
 write_package_patterns required /tmp/required
 write_package_patterns excluded /tmp/excluded "$GITHUB_WORKSPACE"/scripts/excluded
 copy_changed_files
-sudo mkdir -p /tmp/php/etc/apt/sources.list.d /tmp/php/etc/apt/trusted.gpg.d /tmp/php/var/lib/apt/lists /tmp/php/usr/share/keyrings
 sudo touch /var/lib/dpkg/status-diff
 copy_required_package_files
 sudo LC_ALL=C.UTF-8 python3 "$GITHUB_WORKSPACE"/scripts/create_status.py
@@ -256,10 +255,9 @@ sudo cp /var/lib/dpkg/status-diff /tmp/php/var/lib/dpkg/
 sudo cp "$GITHUB_WORKSPACE"/scripts/merge_status.py /tmp/php/usr/sbin/merge_status
 cat /tmp/php/var/lib/dpkg/status-diff
 if [ "$source" = "packages" ]; then
-  sudo cp /etc/apt/sources.list.d/ondrej* /tmp/php/etc/apt/sources.list.d/
-  sudo cp /etc/apt/trusted.gpg.d/ondrej* /tmp/php/etc/apt/trusted.gpg.d/
-  sudo cp /var/lib/apt/lists/*ondrej* /tmp/php/var/lib/apt/lists/
-  sudo cp -a /usr/share/keyrings/ondrej-php-keyring.gpg /tmp/php/usr/share/keyrings/ondrej-php-keyring.gpg
+  sudo cp -a --parents /etc/apt/sources.list.d/setup-php-ubuntu-sury-* \
+    /etc/apt/setup-php-sury-mirrors.txt /usr/share/keyrings/sury-php-keyring.gpg \
+    /var/lib/apt/lists/*setup-php-sury-mirrors.txt* /tmp/php/ || exit 1
 fi
 sudo rm -rf /tmp/php/var/lib/dpkg/alternatives/* /tmp/php/var/lib/dpkg/status-old /tmp/php/var/lib/dpkg/status-orig
 sudo rm -f /tmp/php/var/lib/dpkg/diversions /tmp/php/var/lib/dpkg/diversions-old

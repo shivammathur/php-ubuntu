@@ -34,10 +34,12 @@ fix_packages() {
 }
 
 fix_list() {
-  ppa_list="/etc/apt/sources.list.d/ondrej-ubuntu-php-$VERSION_CODENAME"
-  if [[ -e "$ppa_list.sources" && -e "$ppa_list.list" ]]; then
-    [ -e "/etc/apt/sources.list.d/ubuntu.sources" ] && sudo rm "$ppa_list.list" || sudo rm "$ppa_list.sources"
-  fi
+  local ppa_list
+  for ppa_list in /etc/apt/sources.list.d/{ondrej-ubuntu-php,setup-php-ubuntu-sury}-"$VERSION_CODENAME"; do
+    if [[ -e "$ppa_list.sources" && -e "$ppa_list.list" ]]; then
+      [ -e "/etc/apt/sources.list.d/ubuntu.sources" ] && sudo rm "$ppa_list.list" || sudo rm "$ppa_list.sources"
+    fi
+  done
   if [ "$builds" = "debug" ]; then
     list="$(grep -lr "ondrej/php" /etc/apt/sources.list.d 2>/dev/null | head -n 1)"
     [ -n "$list" ] && sudo apt-get update -o Dir::Etc::sourcelist="$list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"

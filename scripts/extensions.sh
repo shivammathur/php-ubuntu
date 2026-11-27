@@ -72,7 +72,7 @@ add_oauth() {
       build_oauth
     )
   elif [ "$source" = "packages" ]; then
-    DEBIAN_FRONTEND=noninteractive apt-fast install -y --no-install-recommends "php$PHP_VERSION-oauth"
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "php$PHP_VERSION-oauth"
     disable_extension oauth
   elif [ "$source" = "php-builder" ]; then  
     sudo pecl download oauth

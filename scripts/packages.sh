@@ -70,16 +70,10 @@ merge_components() {
   printf '%s\n' "${out[*]}"
 }
 
-add_ppa_helper() {
-  local ppa=$1
-  local branches=$2
-  local list_format
-  ppa_url="https://ppa.launchpadcontent.net/$ppa/ubuntu"
-  key_file=/usr/share/keyrings/"${ppa/\//-}"-keyring.gpg
-  list_dir=/etc/apt/sources.list.d
-  get_launchpad_key "$ppa" "$key_file"
-  . /etc/os-release
-  sudo rm -rf "$list_dir"/"${ppa/\//-}".list || true
+write_source() {
+  local ppa=$1 branches=$2 ppa_url=$3 key_file=$4 list_format
+  local list_dir=/etc/apt/sources.list.d
+  sudo rm -f "$list_dir"/"${ppa/\//-}".list
   list_format="$(get_sources_format)"
   local list_basename="${ppa%%/*}"-"$ID"-"${ppa#*/}"-"$VERSION_CODENAME"
   local list_path
@@ -102,17 +96,41 @@ Signed-By: $key_file
 EOF
   else
     list_path="$list_dir"/"$list_basename".list
-    echo "deb [arch=$arch signed-by=$key_file] $ppa_url $VERSION_CODENAME $components" | sudo tee -a "$list_path" >/dev/null 2>&1
+    echo "deb [arch=$arch signed-by=$key_file] $ppa_url $VERSION_CODENAME $components" | sudo tee "$list_path" >/dev/null 2>&1
   fi
 }
 
+add_ppa_helper() {
+  local ppa=$1 key_file="/usr/share/keyrings/${1/\//-}-keyring.gpg"
+  get_launchpad_key "$ppa" "$key_file"
+  write_source "$ppa" "$2" "https://ppa.launchpadcontent.net/$ppa/ubuntu" "$key_file"
+}
+
+add_sury_source() (
+  local mirrors=/etc/apt/setup-php-sury-mirrors.txt
+  local key=/usr/share/keyrings/sury-php-keyring.gpg
+  local fingerprint=15058500A0235D97F5D10063B188E2B695BD4743
+  local tmp url
+  tmp=$(mktemp -d) || return 1
+  trap 'rm -rf "$tmp"' EXIT
+  local query="/pks/lookup?op=get&options=mr&exact=on&search=0x$fingerprint"
+  for url in https://packages.sury.org/php/apt.gpg "$ppa_sp/keys/sury/php.gpg" "${sks[@]/%/"$query"}"; do
+    if curl -fsSL --connect-timeout 5 --max-time 15 "$url" -o "$tmp/key" &&
+       gpg --batch --with-colons --show-keys "$tmp/key" | awk -F: '$1 == "fpr" {print $10; exit}' | grep -Fxq "$fingerprint"; then
+      gpg --batch --yes --dearmor -o "$tmp/key.gpg" "$tmp/key" || return 1
+      install -m 644 "$tmp/key.gpg" "$key" || return 1
+      break
+    fi
+  done
+  [[ -s "$tmp/key.gpg" ]] || return 1
+  install -m 644 ./scripts/sury-mirrors "$mirrors" || return 1
+  write_source setup-php/sury main "mirror+file:$mirrors" "$key"
+)
+
 add_ppa() {  
-  export _APTMGR=apt-get
   apt-get update && apt-get install -y curl sudo file jq gnupg
-  add_ppa_helper apt-fast/stable main
   add_ppa_helper git-core/ppa main
-  add_ppa_helper ondrej/php main
-  add_ppa_helper ondrej/php main/debug
+  add_sury_source || return 1
   curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
   curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
   echo "deb https://apt.postgresql.org/pub/repos/apt/ $VERSION_CODENAME-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
